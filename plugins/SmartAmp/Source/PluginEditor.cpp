@@ -282,12 +282,18 @@ void WaveNetVaAudioProcessorEditor::sliderValueChanged(Slider* slider)
         processor.set_ampLeadDrive(slider->getValue());
     else if (slider == &ampMasterKnob)
         processor.set_ampMaster(slider->getValue());
-    else if (slider == &ampCleanBassKnob || slider == &ampCleanMidKnob || slider == &ampLeadTrebleKnob || slider == &ampPresenceKnob) {
+    else if (slider == &ampCleanBassKnob || slider == &ampCleanMidKnob || slider == &ampCleanTrebleKnob) {
         if (processor.amp_lead == 1)
             processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
-    else if (slider == &ampLeadBassKnob || slider == &ampLeadMidKnob || slider == &ampLeadTrebleKnob || slider == &ampPresenceKnob) {
+    else if (slider == &ampLeadBassKnob || slider == &ampLeadMidKnob || slider == &ampLeadTrebleKnob) {
         if (processor.amp_lead == 0)
+            processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
+    }
+    else if (slider == &ampPresenceKnob) {
+        if (processor.amp_lead == 1)
+            processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());
+        else if (processor.amp_lead == 0)
             processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
 
