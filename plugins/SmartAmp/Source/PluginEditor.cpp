@@ -49,7 +49,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampPresenceKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampPresenceKnob.addListener(this);
     //ampPresenceKnob.setSkewFactorFromMidPoint(1000.0); // Not working because of custom lookAndFeel class
-    ampPresenceKnob.setRange(-14.0, 14.0);
+    ampPresenceKnob.setRange(-10.0, 10.0);
     ampPresenceKnob.setValue(0.0);
     ampPresenceKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampPresenceKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 75, 20);
@@ -89,12 +89,12 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     addAndMakeVisible(ampCleanGainKnob);
     ampCleanGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanGainKnob.addListener(this);
-    ampCleanGainKnob.setRange(-20.0, 20.0);
-    ampCleanGainKnob.setValue(0.0);
+    ampCleanGainKnob.setRange(0.0, 20.0);
+    ampCleanGainKnob.setValue(10.0);
     ampCleanGainKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampCleanGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampCleanGainKnob.setNumDecimalPlacesToDisplay(1);
-    ampCleanGainKnob.setDoubleClickReturnValue(true, 0.0);
+    ampCleanGainKnob.setDoubleClickReturnValue(true, 10.0);
 
     addAndMakeVisible(ampLeadBassKnob);
     ampLeadBassKnob.setLookAndFeel(&ampSilverKnobLAF);
@@ -129,22 +129,22 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     addAndMakeVisible(ampLeadGainKnob);
     ampLeadGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadGainKnob.addListener(this);
-    ampLeadGainKnob.setRange(-20.0, 20.0);
-    ampLeadGainKnob.setValue(0.0);
+    ampLeadGainKnob.setRange(0.0, 20.0);
+    ampLeadGainKnob.setValue(10.0);
     ampLeadGainKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampLeadGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampLeadGainKnob.setNumDecimalPlacesToDisplay(1);
-    ampLeadGainKnob.setDoubleClickReturnValue(true, 0.0);
+    ampLeadGainKnob.setDoubleClickReturnValue(true, 10.0);
 
     addAndMakeVisible(ampMasterKnob);
     ampMasterKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampMasterKnob.addListener(this);
-    ampMasterKnob.setRange(-24.0, 24.0);
-    ampMasterKnob.setValue(0.0);
+    ampMasterKnob.setRange(-24.0, 0.0);
+    ampMasterKnob.setValue(-12.0);
     ampMasterKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20 );
     ampMasterKnob.setNumDecimalPlacesToDisplay(1);
-    ampMasterKnob.setDoubleClickReturnValue(true, 0.0);
+    ampMasterKnob.setDoubleClickReturnValue(true, -12.0);
 
     // Size of plugin GUI
     setSize (1085, 660);
