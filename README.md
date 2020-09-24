@@ -32,6 +32,7 @@ https://github.com/keyth72/SmartGuitarPedal
 5. Add the <full_path_to>/ Eigen folder to "Header Search Paths" in Exporters -> Debug/Release
 6. Open and build project in Visual Studio (Windows), Xcode (Mac), or Code::Blocks/Makefile (Linux)
 
+Note: Make sure to build in Release mode unless actually debugging. Debug mode will not keep up with real time playing.
 
 This project builds off the work done here:
 https://github.com/damskaggep/WaveNetVA
