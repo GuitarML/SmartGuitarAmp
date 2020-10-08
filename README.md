@@ -39,7 +39,7 @@ https://github.com/keyth72/SmartGuitarPedal
 Note: Make sure to build in Release mode unless actually debugging. Debug mode will not keep up with real time playing.
 
 ## Using your own trained models
-The .json models are baked into the executable when you compile the SmartAmp. A separate model is used for clean and lead channels.
+The .json models are baked into the executable when you compile the SmartAmp. Separate models are used for clean and lead channels.
 To swap out the default models with your own, do the following steps:
 
 1. Open up the project in Projucer and add your json models as a Resource. Right click "Resources", add existing files, and make sure to check "Binary Resource".
