@@ -58,10 +58,11 @@ Where "YOUR_NEW...MODEL" is filename of your json file. You can edit either one,
 
 4. Build SmartAmp in Release mode.
 
+Note: When using different models from the default, you may want to modify the gain/volume knob ranges in the PluginEditor.cpp to suit the levels of the trained model.
 
-
-This project builds off the work done here:
-https://github.com/damskaggep/WaveNetVA
 
 ## License
 This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
+
+This project builds off the work done here:
+https://github.com/damskaggep/WaveNetVA
