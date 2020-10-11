@@ -13,7 +13,6 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "WaveNet.h"
 #include "WaveNetLoader.h"
-#include "ResonantLowpassFilter.h"
 #include "Eq4Band.h"
 
 //==============================================================================
