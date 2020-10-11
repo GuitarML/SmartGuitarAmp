@@ -29,7 +29,7 @@ https://github.com/keyth72/SmartGuitarPedal
 1. Download plugin (currently Windows 10 only) [here](https://github.com/keyth72/SmartGuitarAmp/releases)
 2. Copy to your DAW's VST directory
 
-## Initial Setup
+## Build Instructions
 
 1. Clone or download this repository.
 2. Download and install [JUCE](https://juce.com/) This project uses the "Projucer" application from the JUCE website. 
