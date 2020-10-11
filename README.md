@@ -69,3 +69,5 @@ This project is licensed under the Apache License, Version 2.0 - see the [LICENS
 
 This project builds off the work done here:
 https://github.com/damskaggep/WaveNetVA
+
+The EQ code used in this plugin is based on the work done by Michael Gruhn in 4BandEQ algorithm.
