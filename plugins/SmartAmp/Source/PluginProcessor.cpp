@@ -239,25 +239,39 @@ float WaveNetVaAudioProcessor::convertLogScale(float in_value, float x_min, floa
     return converted_value;
 }
 
-
 void WaveNetVaAudioProcessor::set_ampCleanDrive(float db_ampCleanDrive)
 {
     ampCleanDrive = decibelToLinear(db_ampCleanDrive);
+    ampCleanGainKnobState = db_ampCleanDrive;
 }
 
 void WaveNetVaAudioProcessor::set_ampLeadDrive(float db_ampLeadDrive)
 {
     ampLeadDrive = decibelToLinear(db_ampLeadDrive);
+    ampLeadGainKnobState = db_ampLeadDrive;
 }
 
 void WaveNetVaAudioProcessor::set_ampMaster(float db_ampMaster)
 {
     ampMaster = decibelToLinear(db_ampMaster);
+    ampMasterKnobState = db_ampMaster;
 }
 
 void WaveNetVaAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider)
 {
     eq4band.setParameters(bass_slider, mid_slider, treble_slider, presence_slider);
+
+    // Set knob states for saving positions when closing/reopening GUI
+    if ( amp_lead == 1 ) {
+        ampCleanBassKnobState = bass_slider;
+        ampCleanMidKnobState = mid_slider;
+        ampCleanTrebleKnobState = treble_slider;
+    } else {
+        ampLeadBassKnobState = bass_slider;
+        ampLeadMidKnobState = mid_slider;
+        ampLeadTrebleKnobState = treble_slider;
+    }
+    ampPresenceKnobState = presence_slider;
 }
 
 float WaveNetVaAudioProcessor::decibelToLinear(float dbValue)
