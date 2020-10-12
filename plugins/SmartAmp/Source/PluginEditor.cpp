@@ -44,13 +44,12 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
         0.0);
     addAndMakeVisible(ampLED);
 
-
     addAndMakeVisible(ampPresenceKnob);
     ampPresenceKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampPresenceKnob.addListener(this);
     //ampPresenceKnob.setSkewFactorFromMidPoint(1000.0); // Not working because of custom lookAndFeel class
     ampPresenceKnob.setRange(-10.0, 10.0);
-    ampPresenceKnob.setValue(0.0);
+    ampPresenceKnob.setValue(processor.ampPresenceKnobState);
     ampPresenceKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampPresenceKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 75, 20);
     ampPresenceKnob.setNumDecimalPlacesToDisplay(1);
@@ -60,7 +59,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampCleanBassKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanBassKnob.addListener(this);
     ampCleanBassKnob.setRange(-8.0, 8.0);
-    ampCleanBassKnob.setValue(0.0);
+    ampCleanBassKnob.setValue(processor.ampCleanBassKnobState);
     ampCleanBassKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampCleanBassKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampCleanBassKnob.setNumDecimalPlacesToDisplay(1);
@@ -70,7 +69,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampCleanMidKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanMidKnob.addListener(this);
     ampCleanMidKnob.setRange(-8.0, 8.0);
-    ampCleanMidKnob.setValue(0.0);
+    ampCleanMidKnob.setValue(processor.ampCleanMidKnobState);
     ampCleanMidKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampCleanMidKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampCleanMidKnob.setNumDecimalPlacesToDisplay(1);
@@ -80,7 +79,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampCleanTrebleKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanTrebleKnob.addListener(this);
     ampCleanTrebleKnob.setRange(-8.0, 8.0);
-    ampCleanTrebleKnob.setValue(0.0);
+    ampCleanTrebleKnob.setValue(processor.ampCleanTrebleKnobState);
     ampCleanTrebleKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampCleanTrebleKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampCleanTrebleKnob.setNumDecimalPlacesToDisplay(1);
@@ -90,7 +89,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampCleanGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanGainKnob.addListener(this);
     ampCleanGainKnob.setRange(0.0, 20.0);
-    ampCleanGainKnob.setValue(10.0);
+    ampCleanGainKnob.setValue(processor.ampCleanGainKnobState);
     ampCleanGainKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampCleanGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampCleanGainKnob.setNumDecimalPlacesToDisplay(1);
@@ -100,7 +99,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampLeadBassKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadBassKnob.addListener(this);
     ampLeadBassKnob.setRange(-8.0, 8.0);
-    ampLeadBassKnob.setValue(0.0);
+    ampLeadBassKnob.setValue(processor.ampLeadBassKnobState);
     ampLeadBassKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampLeadBassKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampLeadBassKnob.setNumDecimalPlacesToDisplay(1);
@@ -110,7 +109,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampLeadMidKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadMidKnob.addListener(this);
     ampLeadMidKnob.setRange(-8.0, 8.0);
-    ampLeadMidKnob.setValue(0.0);
+    ampLeadMidKnob.setValue(processor.ampLeadMidKnobState);
     ampLeadMidKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampLeadMidKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampLeadMidKnob.setNumDecimalPlacesToDisplay(1);
@@ -120,7 +119,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampLeadTrebleKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadTrebleKnob.addListener(this);
     ampLeadTrebleKnob.setRange(-8.0, 8.0);
-    ampLeadTrebleKnob.setValue(0.0);
+    ampLeadTrebleKnob.setValue(processor.ampCleanTrebleKnobState);
     ampLeadTrebleKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampLeadTrebleKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampLeadTrebleKnob.setNumDecimalPlacesToDisplay(1);
@@ -130,7 +129,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampLeadGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadGainKnob.addListener(this);
     ampLeadGainKnob.setRange(0.0, 20.0);
-    ampLeadGainKnob.setValue(10.0);
+    ampLeadGainKnob.setValue(processor.ampLeadGainKnobState);
     ampLeadGainKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampLeadGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampLeadGainKnob.setNumDecimalPlacesToDisplay(1);
@@ -140,7 +139,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampMasterKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampMasterKnob.addListener(this);
     ampMasterKnob.setRange(-24.0, 0.0);
-    ampMasterKnob.setValue(-12.0);
+    ampMasterKnob.setValue(processor.ampMasterKnobState);
     ampMasterKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20 );
     ampMasterKnob.setNumDecimalPlacesToDisplay(1);
