@@ -119,7 +119,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampLeadTrebleKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadTrebleKnob.addListener(this);
     ampLeadTrebleKnob.setRange(-8.0, 8.0);
-    ampLeadTrebleKnob.setValue(processor.ampCleanTrebleKnobState);
+    ampLeadTrebleKnob.setValue(processor.ampLeadTrebleKnobState);
     ampLeadTrebleKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampLeadTrebleKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
     ampLeadTrebleKnob.setNumDecimalPlacesToDisplay(1);
