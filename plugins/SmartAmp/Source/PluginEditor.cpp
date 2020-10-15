@@ -284,10 +284,18 @@ void WaveNetVaAudioProcessorEditor::sliderValueChanged(Slider* slider)
     else if (slider == &ampCleanBassKnob || slider == &ampCleanMidKnob || slider == &ampCleanTrebleKnob) {
         if (processor.amp_lead == 1)
             processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());
+        // Set knob states for saving positions when closing/reopening GUI
+        processor.ampCleanBassKnobState = ampCleanBassKnob.getValue();
+        processor.ampCleanMidKnobState = ampCleanMidKnob.getValue();
+        processor.ampCleanTrebleKnobState = ampCleanTrebleKnob.getValue();
     }
     else if (slider == &ampLeadBassKnob || slider == &ampLeadMidKnob || slider == &ampLeadTrebleKnob) {
         if (processor.amp_lead == 0)
             processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
+        // Set knob states for saving positions when closing/reopening GUI
+        processor.ampLeadBassKnobState = ampLeadBassKnob.getValue();
+        processor.ampLeadMidKnobState = ampLeadMidKnob.getValue();
+        processor.ampLeadTrebleKnobState = ampLeadTrebleKnob.getValue();
     }
     else if (slider == &ampPresenceKnob) {
         if (processor.amp_lead == 1)
