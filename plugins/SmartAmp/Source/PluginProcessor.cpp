@@ -261,16 +261,6 @@ void WaveNetVaAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, flo
 {
     eq4band.setParameters(bass_slider, mid_slider, treble_slider, presence_slider);
 
-    // Set knob states for saving positions when closing/reopening GUI
-    if ( amp_lead == 1 ) {
-        ampCleanBassKnobState = bass_slider;
-        ampCleanMidKnobState = mid_slider;
-        ampCleanTrebleKnobState = treble_slider;
-    } else {
-        ampLeadBassKnobState = bass_slider;
-        ampLeadMidKnobState = mid_slider;
-        ampLeadTrebleKnobState = treble_slider;
-    }
     ampPresenceKnobState = presence_slider;
 }
 
