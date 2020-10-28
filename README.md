@@ -26,7 +26,7 @@ https://github.com/keyth72/SmartGuitarPedal
 
 ## Installing the plugin
 
-1. Download plugin (currently Windows 10 only) [here](https://github.com/keyth72/SmartGuitarAmp/releases)
+1. Download plugin (Windows 10, Ubuntu Linux) [here](https://github.com/keyth72/SmartGuitarAmp/releases)
 2. Copy to your DAW's VST directory
 
 ## Build Instructions
