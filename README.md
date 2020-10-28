@@ -3,7 +3,7 @@
 Guitar plugin made with JUCE that uses neural network models to emulate real world hardware.
 
 See video demo here:
-https://www.youtube.com/watch?v=I9DElOaZvHo
+https://youtu.be/qV7WGwsYi9k
 
 This plugin uses a WaveNet model to recreate the sound of real world hardware. The current version
 models a small tube amp, with the ability to add more options in the future. There is a clean/lead channel, 
