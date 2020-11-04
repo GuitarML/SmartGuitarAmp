@@ -15,14 +15,14 @@ modulate the modeled sound.
 You can create your own models and load them in SmartGuitarAmp with minor code modifications.
 To train your own models, use the following Github repository:
 
-https://github.com/keyth72/PedalNetRT
+https://github.com/GuitarML/PedalNetRT
 
 Model training is done using PyTorch on pre recorded .wav samples. More info in the above repository.
 Feel free to create a pull request to add your own trained models to this repository.
 
 
 Also see compainion plugin, the SmartGuitarPedal.
-https://github.com/keyth72/SmartGuitarPedal
+https://github.com/GuitarML/SmartGuitarPedal
 
 ## Installing the plugin
 
