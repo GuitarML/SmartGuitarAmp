@@ -8,7 +8,7 @@ https://www.youtube.com/watch?v=M_rEZaOYFac
 This plugin uses a WaveNet model to recreate the sound of real world hardware. The current version
 models a small tube amp, with the ability to add more options in the future. There is a clean/lead channel, 
 which is equivalent to the amp's clean and full drive settings. Gain and EQ knobs were added to 
-modulate the modeled sound.  
+modulate the modeled sound.
 
 ![app](https://github.com/keyth72/SmartGuitarAmp/blob/master/resources/amp_pic.png)
 
