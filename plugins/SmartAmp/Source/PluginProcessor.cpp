@@ -163,9 +163,9 @@ void WaveNetVaAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
         //    Master Volume 
         buffer.applyGain(ampMaster);
 
-        if (amp_lead == 1) {// add extra clean boost because this particular clean model is very quiet
-            buffer.applyGain(15.0);
-        }
+        //if (amp_lead == 1) {// add extra clean boost because this particular clean model is very quiet
+            //buffer.applyGain(15.0);
+        //}
 
     }
     

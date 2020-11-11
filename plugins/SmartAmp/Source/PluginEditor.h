@@ -61,6 +61,7 @@ private:
 
     TextButton loadButton;
     Label modelLabel;
+    juce::String fname;
     virtual void buttonClicked(Button* button) override;
     void loadButtonClicked();
     virtual void sliderValueChanged(Slider* slider) override;

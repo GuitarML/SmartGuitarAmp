@@ -75,6 +75,8 @@ public:
     // Pedal/amp states
     int amp_state = 1; // 0 = off, 1 = on
     int amp_lead = 1; // 1 = clean, 0 = lead
+    File loaded_tone;
+    juce::String loaded_tone_name;
 
     // Amp knob states
     float ampPresenceKnobState = 0.0;
