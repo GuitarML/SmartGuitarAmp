@@ -60,6 +60,7 @@ private:
     int current_background = 1;
 
     TextButton loadButton;
+    Label modelLabel;
     virtual void buttonClicked(Button* button) override;
     void loadButtonClicked();
     virtual void sliderValueChanged(Slider* slider) override;

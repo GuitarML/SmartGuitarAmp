@@ -33,6 +33,11 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     loadButton.setButtonText("Load Tone");
     loadButton.addListener(this);
 
+    addAndMakeVisible(modelLabel);
+    modelLabel.setText("", juce::NotificationType::dontSendNotification);
+    modelLabel.setJustificationType(juce::Justification::left);
+    modelLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+
     ampCleanLeadButton.setImages(true, true, true,
         ImageCache::getFromMemory(BinaryData::power_switch_up_png, BinaryData::power_switch_up_pngSize), 1.0, Colours::transparentWhite,
         Image(), 1.0, Colours::transparentWhite,
@@ -226,7 +231,7 @@ void WaveNetVaAudioProcessorEditor::resized()
     // subcomponents in your editor..
 
     loadButton.setBounds(50, 40, 125, 25);
-
+    modelLabel.setBounds(50, 65, 400, 25);
     // Amp Widgets
     ampPresenceKnob.setBounds(97, 495, 75, 105);
     ampCleanBassKnob.setBounds(197, 495, 75, 105);
@@ -254,6 +259,8 @@ void WaveNetVaAudioProcessorEditor::loadButtonClicked()
     {
         File file = chooser.getResult();
         processor.loadConfig(file);
+        juce::String fname = file.getFileName();
+        modelLabel.setText(fname, juce::NotificationType::dontSendNotification);
     }
 }
 
@@ -290,6 +297,7 @@ void WaveNetVaAudioProcessorEditor::ampCleanLeadButtonClicked() {
         processor.loadConfigAmp();
         processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
+    modelLabel.setText("", juce::NotificationType::dontSendNotification);
     repaint();
 }
 
