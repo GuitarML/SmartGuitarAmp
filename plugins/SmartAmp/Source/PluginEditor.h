@@ -59,7 +59,9 @@ private:
     Image background;
     int current_background = 1;
 
+    TextButton loadButton;
     virtual void buttonClicked(Button* button) override;
+    void loadButtonClicked();
     virtual void sliderValueChanged(Slider* slider) override;
     void ampOnButtonClicked();
     void ampCleanLeadButtonClicked();

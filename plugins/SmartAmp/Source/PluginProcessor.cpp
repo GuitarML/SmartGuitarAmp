@@ -231,6 +231,22 @@ void WaveNetVaAudioProcessor::loadConfigAmp()
     this->suspendProcessing(false);
 }
 
+void WaveNetVaAudioProcessor::loadConfig(File configFile)
+{
+    this->suspendProcessing(true);
+    WaveNetLoader loader(dummyVar, configFile);
+    int numChannels = loader.numChannels;
+    int inputChannels = loader.inputChannels;
+    int outputChannels = loader.outputChannels;
+    int filterWidth = loader.filterWidth;
+    std::vector<int> dilations = loader.dilations;
+    std::string activation = loader.activation;
+    waveNet.setParams(inputChannels, outputChannels, numChannels, filterWidth, activation,
+        dilations);
+    loader.loadVariables(waveNet);
+    this->suspendProcessing(false);
+}
+
 float WaveNetVaAudioProcessor::convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max)
 {
     float b = log(y_max / y_min) / (x_max - x_min);

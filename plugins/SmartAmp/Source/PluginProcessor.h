@@ -59,6 +59,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     void loadConfigAmp();
+    void loadConfig(File configFile);
 
     // Overdrive Pedal
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
@@ -97,6 +98,8 @@ private:
     float ampCleanDrive = 1.0;
     float ampLeadDrive = 1.0;
     float ampMaster = 1.0;
+
+    var dummyVar;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveNetVaAudioProcessor)

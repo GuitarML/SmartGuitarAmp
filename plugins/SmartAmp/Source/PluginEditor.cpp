@@ -29,6 +29,10 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     addAndMakeVisible(ampOnButton);
     ampOnButton.addListener(this);
 
+    addAndMakeVisible(loadButton);
+    loadButton.setButtonText("Load Tone");
+    loadButton.addListener(this);
+
     ampCleanLeadButton.setImages(true, true, true,
         ImageCache::getFromMemory(BinaryData::power_switch_up_png, BinaryData::power_switch_up_pngSize), 1.0, Colours::transparentWhite,
         Image(), 1.0, Colours::transparentWhite,
@@ -221,6 +225,8 @@ void WaveNetVaAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 
+    loadButton.setBounds(50, 40, 125, 25);
+
     // Amp Widgets
     ampPresenceKnob.setBounds(97, 495, 75, 105);
     ampCleanBassKnob.setBounds(197, 495, 75, 105);
@@ -239,12 +245,27 @@ void WaveNetVaAudioProcessorEditor::resized()
     ampLED.setBounds(975, 160, 15, 25);
 }
 
+void WaveNetVaAudioProcessorEditor::loadButtonClicked()
+{
+    FileChooser chooser("Select a .json tone...",
+        {},
+        "*.json");
+    if (chooser.browseForFileToOpen())
+    {
+        File file = chooser.getResult();
+        processor.loadConfig(file);
+    }
+}
+
 void WaveNetVaAudioProcessorEditor::buttonClicked(juce::Button* button)
 {
-    if (button == &ampOnButton)
+    if (button == &ampOnButton) {
         ampOnButtonClicked();
-    else if (button == &ampCleanLeadButton)
+    } else if (button == &ampCleanLeadButton) {
         ampCleanLeadButtonClicked();
+    } else if (button == &loadButton) {
+        loadButtonClicked();
+    }
 }
 
 
