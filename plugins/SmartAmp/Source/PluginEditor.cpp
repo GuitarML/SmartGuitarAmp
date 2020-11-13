@@ -158,7 +158,7 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     setSize (1085, 660);
 
     // Load the preset wavenet json model from the project resources
-    if (processor.loaded_tone_name == "") {
+    if (processor.custom_tone == 0) {
         processor.loadConfigAmp();
     } else {
         processor.loadConfig(processor.loaded_tone);
@@ -267,6 +267,7 @@ void WaveNetVaAudioProcessorEditor::loadButtonClicked()
         modelLabel.setText(fname, juce::NotificationType::dontSendNotification);
         processor.loaded_tone = file;
         processor.loaded_tone_name = fname;
+        processor.custom_tone = 1;
     }
 }
 
@@ -305,6 +306,7 @@ void WaveNetVaAudioProcessorEditor::ampCleanLeadButtonClicked() {
     }
     modelLabel.setText("", juce::NotificationType::dontSendNotification);
     processor.loaded_tone_name = "";
+    processor.custom_tone = 0;
     repaint();
 }
 

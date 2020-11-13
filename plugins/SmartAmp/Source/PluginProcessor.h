@@ -75,6 +75,7 @@ public:
     // Pedal/amp states
     int amp_state = 1; // 0 = off, 1 = on
     int amp_lead = 1; // 1 = clean, 0 = lead
+    int custom_tone = 0; // 0 = custom tone loaded, 1 = default channel tone
     File loaded_tone;
     juce::String loaded_tone_name;
 
