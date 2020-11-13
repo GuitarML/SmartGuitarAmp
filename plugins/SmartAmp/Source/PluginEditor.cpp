@@ -29,6 +29,15 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     addAndMakeVisible(ampOnButton);
     ampOnButton.addListener(this);
 
+    addAndMakeVisible(loadButton);
+    loadButton.setButtonText("Load Tone");
+    loadButton.addListener(this);
+
+    addAndMakeVisible(modelLabel);
+    modelLabel.setText(processor.loaded_tone_name, juce::NotificationType::dontSendNotification);
+    modelLabel.setJustificationType(juce::Justification::left);
+    modelLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+
     ampCleanLeadButton.setImages(true, true, true,
         ImageCache::getFromMemory(BinaryData::power_switch_up_png, BinaryData::power_switch_up_pngSize), 1.0, Colours::transparentWhite,
         Image(), 1.0, Colours::transparentWhite,
@@ -149,7 +158,11 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     setSize (1085, 660);
 
     // Load the preset wavenet json model from the project resources
-    processor.loadConfigAmp();
+    if (processor.custom_tone == 0) {
+        processor.loadConfigAmp();
+    } else {
+        processor.loadConfig(processor.loaded_tone);
+    }
 }
 
 WaveNetVaAudioProcessorEditor::~WaveNetVaAudioProcessorEditor()
@@ -221,6 +234,8 @@ void WaveNetVaAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 
+    loadButton.setBounds(50, 40, 125, 25);
+    modelLabel.setBounds(50, 65, 400, 25);
     // Amp Widgets
     ampPresenceKnob.setBounds(97, 495, 75, 105);
     ampCleanBassKnob.setBounds(197, 495, 75, 105);
@@ -239,12 +254,32 @@ void WaveNetVaAudioProcessorEditor::resized()
     ampLED.setBounds(975, 160, 15, 25);
 }
 
+void WaveNetVaAudioProcessorEditor::loadButtonClicked()
+{
+    FileChooser chooser("Select a .json tone...",
+        {},
+        "*.json");
+    if (chooser.browseForFileToOpen())
+    {
+        File file = chooser.getResult();
+        processor.loadConfig(file);
+        fname = file.getFileName();
+        modelLabel.setText(fname, juce::NotificationType::dontSendNotification);
+        processor.loaded_tone = file;
+        processor.loaded_tone_name = fname;
+        processor.custom_tone = 1;
+    }
+}
+
 void WaveNetVaAudioProcessorEditor::buttonClicked(juce::Button* button)
 {
-    if (button == &ampOnButton)
+    if (button == &ampOnButton) {
         ampOnButtonClicked();
-    else if (button == &ampCleanLeadButton)
+    } else if (button == &ampCleanLeadButton) {
         ampCleanLeadButtonClicked();
+    } else if (button == &loadButton) {
+        loadButtonClicked();
+    }
 }
 
 
@@ -269,6 +304,9 @@ void WaveNetVaAudioProcessorEditor::ampCleanLeadButtonClicked() {
         processor.loadConfigAmp();
         processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
+    modelLabel.setText("", juce::NotificationType::dontSendNotification);
+    processor.loaded_tone_name = "";
+    processor.custom_tone = 0;
     repaint();
 }
 

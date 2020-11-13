@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="ym7AY5" name="SmartAmp" projectType="audioplug" pluginAUMainType="'aufx'"
-              companyName="HandDrawnAmps" headerPath="$(HOME)/eigen/" displaySplashScreen="1"
+              companyName="GuitarML" headerPath="$(HOME)/eigen/" displaySplashScreen="1"
               jucerFormatVersion="1" pluginCode="sa1" maxBinaryFileSize="20971520">
   <MAINGROUP id="ZrSGof" name="SmartAmp">
     <GROUP id="{0250E2E8-A733-0AA7-0A08-97085228CF87}" name="Resources">
@@ -85,7 +85,7 @@
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="SmartAmp"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="SmartAmp"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="SmartAmp" headerPath="C:\Users\rache\Desktop\dev\eigen-3.3.7"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_video"/>

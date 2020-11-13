@@ -59,6 +59,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     void loadConfigAmp();
+    void loadConfig(File configFile);
 
     // Overdrive Pedal
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
@@ -74,6 +75,9 @@ public:
     // Pedal/amp states
     int amp_state = 1; // 0 = off, 1 = on
     int amp_lead = 1; // 1 = clean, 0 = lead
+    int custom_tone = 0; // 0 = custom tone loaded, 1 = default channel tone
+    File loaded_tone;
+    juce::String loaded_tone_name;
 
     // Amp knob states
     float ampPresenceKnobState = 0.0;
@@ -97,6 +101,8 @@ private:
     float ampCleanDrive = 1.0;
     float ampLeadDrive = 1.0;
     float ampMaster = 1.0;
+
+    var dummyVar;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveNetVaAudioProcessor)

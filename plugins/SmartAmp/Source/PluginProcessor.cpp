@@ -163,8 +163,8 @@ void WaveNetVaAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
         //    Master Volume 
         buffer.applyGain(ampMaster);
 
-        if (amp_lead == 1) {// add extra clean boost because this particular clean model is very quiet
-            buffer.applyGain(15.0);
+        if (amp_lead == 1 && custom_tone == 0 ) {// add extra clean boost because this particular clean model is very quiet
+            buffer.applyGain(8.0);
         }
 
     }
@@ -228,6 +228,22 @@ void WaveNetVaAudioProcessor::loadConfigAmp()
         loader2.loadVariables(waveNet);
     }
     
+    this->suspendProcessing(false);
+}
+
+void WaveNetVaAudioProcessor::loadConfig(File configFile)
+{
+    this->suspendProcessing(true);
+    WaveNetLoader loader(dummyVar, configFile);
+    int numChannels = loader.numChannels;
+    int inputChannels = loader.inputChannels;
+    int outputChannels = loader.outputChannels;
+    int filterWidth = loader.filterWidth;
+    std::vector<int> dilations = loader.dilations;
+    std::string activation = loader.activation;
+    waveNet.setParams(inputChannels, outputChannels, numChannels, filterWidth, activation,
+        dilations);
+    loader.loadVariables(waveNet);
     this->suspendProcessing(false);
 }
 
