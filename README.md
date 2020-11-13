@@ -41,28 +41,11 @@ https://github.com/GuitarML/SmartGuitarPedal
 
 Note: Make sure to build in Release mode unless actually debugging. Debug mode will not keep up with real time playing.
 
-## Using your own trained models
-The .json models are baked into the executable when you compile the SmartAmp. Separate models are used for clean and lead channels.
-To swap out the default models with your own, do the following steps:
+## Using your own custom trained models (or models from the TonePack)
 
-1. Open up the project in Projucer and add your json models as a Resource. Right click "Resources", add existing files, and make sure to check "Binary Resource".
-
-2. Open the Visual Studio solution (or other target IDE). You should see the new .json model files under "Resources" in the solution explorer.
-
-3. Open PluginProcessor.cpp and edit lines 208 or 219 (this determines which model is used on the Lead or Clean channel):
-```
- (208)  WaveNetLoader loader2(BinaryData::bluej_fullD_p0153_json);    --> 
-                     WaveNetLoader loader2(BinaryData::YOUR_NEW_LEAD_MODEL_json);
-
- (219)  WaveNetLoader loader2(BinaryData::bluej_clean_p0088_json);   -->
-                     WaveNetLoader loader2(BinaryData::YOUR_NEW_CLEAN_MODEL_json);
-```                     
-Where "YOUR_NEW...MODEL" is filename of your json file. You can edit either one, or both, but keep in mind they are separately trained models.
-
-4. Build SmartAmp in Release mode.
-
-Note: When using different models from the default, you may want to modify the gain/volume knob ranges in the PluginEditor.cpp to suit the levels of the trained model.
-
+Use the "Load Tone" button in the plugin to load tone models trained with PedalNetRT.  The current channel's 
+EQ/gain will be applied to the custom tone.  Switching the clean/lead channel unloads the custom tone and 
+reloads the channel's default tone.
 
 ## License
 This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
