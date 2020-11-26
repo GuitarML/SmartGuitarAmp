@@ -93,7 +93,6 @@ public:
 
 private:
     WaveNet waveNet; // Amp Clean Channel / Lead Channel
-
     Eq4Band eq4band; // Amp EQ
 
 

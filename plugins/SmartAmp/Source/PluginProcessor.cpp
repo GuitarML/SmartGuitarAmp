@@ -163,8 +163,9 @@ void WaveNetVaAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
         //    Master Volume 
         buffer.applyGain(ampMaster);
 
-        if (amp_lead == 1 && custom_tone == 0 ) {// add extra clean boost because this particular clean model is very quiet
-            buffer.applyGain(8.0);
+        //    Apply levelAdjust from model param (for adjusting quiet or loud models)
+        if ( waveNet.levelAdjust != 0.0 ) {
+            buffer.applyGain(waveNet.levelAdjust);
         }
 
     }
@@ -206,6 +207,7 @@ void WaveNetVaAudioProcessor::loadConfigAmp()
     
     if (amp_lead == 0) { // if lead on 
         WaveNetLoader loader2(BinaryData::bluej_fullD_p0153_json);
+        float levelAdjust = loader2.levelAdjust;
         int numChannels2 = loader2.numChannels;
         int inputChannels2 = loader2.inputChannels;
         int outputChannels2 = loader2.outputChannels;
@@ -213,10 +215,11 @@ void WaveNetVaAudioProcessor::loadConfigAmp()
         std::vector<int> dilations2 = loader2.dilations;
         std::string activation2 = loader2.activation;
         waveNet.setParams(inputChannels2, outputChannels2, numChannels2, filterWidth2, activation2,
-            dilations2);
+            dilations2, levelAdjust);
         loader2.loadVariables(waveNet);
     } else { // else if clean on
         WaveNetLoader loader2(BinaryData::bluej_clean_p0088_json);
+        float levelAdjust = loader2.levelAdjust;
         int numChannels2 = loader2.numChannels;
         int inputChannels2 = loader2.inputChannels;
         int outputChannels2 = loader2.outputChannels;
@@ -224,7 +227,7 @@ void WaveNetVaAudioProcessor::loadConfigAmp()
         std::vector<int> dilations2 = loader2.dilations;
         std::string activation2 = loader2.activation;
         waveNet.setParams(inputChannels2, outputChannels2, numChannels2, filterWidth2, activation2,
-            dilations2);
+            dilations2, levelAdjust);
         loader2.loadVariables(waveNet);
     }
     
@@ -235,6 +238,7 @@ void WaveNetVaAudioProcessor::loadConfig(File configFile)
 {
     this->suspendProcessing(true);
     WaveNetLoader loader(dummyVar, configFile);
+    float levelAdjust = loader.levelAdjust;
     int numChannels = loader.numChannels;
     int inputChannels = loader.inputChannels;
     int outputChannels = loader.outputChannels;
@@ -242,7 +246,7 @@ void WaveNetVaAudioProcessor::loadConfig(File configFile)
     std::vector<int> dilations = loader.dilations;
     std::string activation = loader.activation;
     waveNet.setParams(inputChannels, outputChannels, numChannels, filterWidth, activation,
-        dilations);
+        dilations, levelAdjust);
     loader.loadVariables(waveNet);
     this->suspendProcessing(false);
 }
