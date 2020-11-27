@@ -22,6 +22,7 @@ class WaveNetLoader
 public:
     WaveNetLoader(var jsonFile);
     WaveNetLoader(var jsonFile, File configFile);
+    float levelAdjust;
     int numChannels;
     int inputChannels;
     int outputChannels;

@@ -25,8 +25,9 @@ public:
     void setWeight(std::vector<float> W, int layerIdx, std::string name);
     void setParams(int newInputChannels, int newOutputChannels, int newConvChannels,
                    int newFilterWidth, std::string newActivation,
-                   std::vector<int> newDilations);
-    
+                   std::vector<int> newDilations, float levelAdjust_in);
+    float levelAdjust = 0.0;
+
 private:
     ConvolutionStack convStack;
     ConvolutionLayer inputLayer;

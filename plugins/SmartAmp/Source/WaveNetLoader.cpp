@@ -16,7 +16,10 @@ WaveNetLoader::WaveNetLoader(var jsonFile)
 {
     // Edit this line to point to your binary json file in project resources
     config = JSON::parse(jsonFile);
-    
+    if (config.hasProperty("level_adjust"))
+    {
+        levelAdjust = config["level_adjust"];
+    }
     numChannels = config["residual_channels"];
     inputChannels = config["input_channels"];
     outputChannels = config["output_channels"];
@@ -30,6 +33,10 @@ WaveNetLoader::WaveNetLoader(var jsonFile, File configFile)
     // Edit this line to point to your binary json file in project resources
     config = JSON::parse(configFile);
 
+    if (config.hasProperty("level_adjust"))
+    {
+        levelAdjust = config["level_adjust"];
+    }
     numChannels = config["residual_channels"];
     inputChannels = config["input_channels"];
     outputChannels = config["output_channels"];
