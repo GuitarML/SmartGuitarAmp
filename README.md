@@ -26,8 +26,8 @@ https://github.com/GuitarML/SmartGuitarPedal
 
 ## Installing the plugin
 
-1. Download plugin (Windows 10, Ubuntu Linux) [here](https://github.com/keyth72/SmartGuitarAmp/releases)
-2. Copy to your DAW's VST directory
+1. Download plugin (Windows 10, Mac, Ubuntu Linux) [here](https://github.com/keyth72/SmartGuitarAmp/releases)
+2. Copy to your DAW's VST directory (for Mac, use .dmg installer or copy AU/VST3 to desired folder)
 
 ## Build Instructions
 
