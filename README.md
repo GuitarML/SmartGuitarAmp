@@ -2,8 +2,7 @@
 
 Guitar plugin made with JUCE that uses neural network models to emulate real world hardware.
 
-See video demo here:
-https://www.youtube.com/watch?v=M_rEZaOYFac
+See video demo on [YouTube](https://www.youtube.com/watch?v=M_rEZaOYFac)
 
 This plugin uses a WaveNet model to recreate the sound of real world hardware. The current version
 models a small tube amp, with the ability to add more options in the future. There is a clean/lead channel, 
@@ -13,16 +12,13 @@ modulate the modeled sound.
 ![app](https://github.com/keyth72/SmartGuitarAmp/blob/master/resources/amp_pic.png)
 
 You can create your own models and load them in SmartGuitarAmp with minor code modifications.
-To train your own models, use the following Github repository:
-
-https://github.com/GuitarML/PedalNetRT
+To train your own models, use [PedalNetRT](https://github.com/GuitarML/PedalNetRT)
 
 Model training is done using PyTorch on pre recorded .wav samples. More info in the above repository.
 To share your best models, email the json files to smartguitarml@gmail.com and they may be included 
 in the latest release as a downloadable zip.
 
-Also see compainion plugin, the SmartGuitarPedal.
-https://github.com/GuitarML/SmartGuitarPedal
+Also see compainion plugin, the [SmartGuitarPedal](https://github.com/GuitarML/SmartGuitarPedal)
 
 ## Installing the plugin
 
@@ -50,7 +46,6 @@ reloads the channel's default tone.
 ## License
 This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
 
-This project builds off the work done here:
-https://github.com/damskaggep/WaveNetVA
+This project builds off the work done in [WaveNetVA]https://github.com/damskaggep/WaveNetVA)
 
 The EQ code used in this plugin is based on the work done by Michael Gruhn in 4BandEQ algorithm.
