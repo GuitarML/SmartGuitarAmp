@@ -46,6 +46,6 @@ reloads the channel's default tone.
 ## License
 This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
 
-This project builds off the work done in [WaveNetVA]https://github.com/damskaggep/WaveNetVA)
+This project builds off the work done in [WaveNetVA](https://github.com/damskaggep/WaveNetVA)
 
 The EQ code used in this plugin is based on the work done by Michael Gruhn in 4BandEQ algorithm.
