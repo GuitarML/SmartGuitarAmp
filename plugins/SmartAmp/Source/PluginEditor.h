@@ -56,7 +56,10 @@ private:
     // LookandFeels 
     myLookAndFeel ampSilverKnobLAF;
 
-    Image background;
+    //Image background;
+    Image background_clean = ImageCache::getFromMemory(BinaryData::amp_clean_jpg, BinaryData::amp_clean_jpgSize);
+    Image background_lead = ImageCache::getFromMemory(BinaryData::amp_lead_jpg, BinaryData::amp_lead_jpgSize);
+    Image background_off = ImageCache::getFromMemory(BinaryData::amp_off_jpg, BinaryData::amp_off_jpgSize);
     int current_background = 1;
 
     TextButton loadButton;
@@ -67,6 +70,7 @@ private:
     virtual void sliderValueChanged(Slider* slider) override;
     void ampOnButtonClicked();
     void ampCleanLeadButtonClicked();
+    void resetImages();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveNetVaAudioProcessorEditor)
 };
