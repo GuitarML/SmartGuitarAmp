@@ -175,16 +175,25 @@ void WaveNetVaAudioProcessorEditor::paint (Graphics& g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     //g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
     if ( current_background == 1 && processor.amp_state == 1 && processor.amp_lead == 1 ) {
-        background = ImageCache::getFromMemory(BinaryData::amp_clean_png, BinaryData::amp_clean_pngSize);
-    } else if (current_background == 1 && processor.amp_state == 1 && processor.amp_lead == 0) {
-        background = ImageCache::getFromMemory(BinaryData::amp_lead_png, BinaryData::amp_lead_pngSize);
-    } else {
-        background = ImageCache::getFromMemory(BinaryData::amp_off_png, BinaryData::amp_off_pngSize);
-    }
-    g.drawImageAt(background, 0, 0);
+        // Redraw only the clipped part of the background image
+        juce::Rectangle<int> ClipRect = g.getClipBounds();
+        g.drawImage(background_clean, ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight(), ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight());
 
-    g.setColour (Colours::white);
-    g.setFont (15.0f);
+    } else if (current_background == 1 && processor.amp_state == 1 && processor.amp_lead == 0) {
+        // Redraw only the clipped part of the background image
+        juce::Rectangle<int> ClipRect = g.getClipBounds();
+        g.drawImage(background_lead, ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight(), ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight());
+
+    } else {
+        // Redraw only the clipped part of the background image
+        juce::Rectangle<int> ClipRect = g.getClipBounds();
+        g.drawImage(background_off, ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight(), ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight());
+
+    }
+    //g.drawImageAt(background, 0, 0);
+
+    //g.setColour (Colours::white);
+    //g.setFont (15.0f);
 
     // Should really override the ToggleButton class, but being lazy here
     // Set On/Off amp graphic
@@ -290,6 +299,7 @@ void WaveNetVaAudioProcessorEditor::ampOnButtonClicked() {
     else {
         processor.amp_state = 0;
     }
+    resetImages();
     repaint();
 }
 
@@ -307,6 +317,8 @@ void WaveNetVaAudioProcessorEditor::ampCleanLeadButtonClicked() {
     modelLabel.setText("", juce::NotificationType::dontSendNotification);
     processor.loaded_tone_name = "";
     processor.custom_tone = 0;
+
+    resetImages();
     repaint();
 }
 
@@ -344,3 +356,46 @@ void WaveNetVaAudioProcessorEditor::sliderValueChanged(Slider* slider)
 
 }
 
+void WaveNetVaAudioProcessorEditor::resetImages()
+{
+    // Set On/Off amp graphic
+    if (processor.amp_state == 0) {
+        ampOnButton.setImages(true, true, true,
+            ImageCache::getFromMemory(BinaryData::power_switch_down_png, BinaryData::power_switch_down_pngSize), 1.0, Colours::transparentWhite,
+            Image(), 1.0, Colours::transparentWhite,
+            ImageCache::getFromMemory(BinaryData::power_switch_down_png, BinaryData::power_switch_down_pngSize), 1.0, Colours::transparentWhite,
+            0.0);
+        ampLED.setImages(true, true, true,
+            ImageCache::getFromMemory(BinaryData::led_blue_off_png, BinaryData::led_blue_off_pngSize), 1.0, Colours::transparentWhite,
+            Image(), 1.0, Colours::transparentWhite,
+            ImageCache::getFromMemory(BinaryData::led_blue_off_png, BinaryData::led_blue_off_pngSize), 1.0, Colours::transparentWhite,
+            0.0);
+    }
+    else {
+        ampOnButton.setImages(true, true, true,
+            ImageCache::getFromMemory(BinaryData::power_switch_up_png, BinaryData::power_switch_up_pngSize), 1.0, Colours::transparentWhite,
+            Image(), 1.0, Colours::transparentWhite,
+            ImageCache::getFromMemory(BinaryData::power_switch_up_png, BinaryData::power_switch_up_pngSize), 1.0, Colours::transparentWhite,
+            0.0);
+        ampLED.setImages(true, true, true,
+            ImageCache::getFromMemory(BinaryData::led_blue_on_png, BinaryData::led_blue_on_pngSize), 1.0, Colours::transparentWhite,
+            Image(), 1.0, Colours::transparentWhite,
+            ImageCache::getFromMemory(BinaryData::led_blue_on_png, BinaryData::led_blue_on_pngSize), 1.0, Colours::transparentWhite,
+            0.0);
+    }
+    // Set clean/lead switch graphic
+    if (processor.amp_lead == 0) {
+        ampCleanLeadButton.setImages(true, true, true,
+            ImageCache::getFromMemory(BinaryData::power_switch_down_png, BinaryData::power_switch_down_pngSize), 1.0, Colours::transparentWhite,
+            Image(), 1.0, Colours::transparentWhite,
+            ImageCache::getFromMemory(BinaryData::power_switch_down_png, BinaryData::power_switch_down_pngSize), 1.0, Colours::transparentWhite,
+            0.0);
+    }
+    else {
+        ampCleanLeadButton.setImages(true, true, true,
+            ImageCache::getFromMemory(BinaryData::power_switch_up_png, BinaryData::power_switch_up_pngSize), 1.0, Colours::transparentWhite,
+            Image(), 1.0, Colours::transparentWhite,
+            ImageCache::getFromMemory(BinaryData::power_switch_up_png, BinaryData::power_switch_up_pngSize), 1.0, Colours::transparentWhite,
+            0.0);
+    }
+}
