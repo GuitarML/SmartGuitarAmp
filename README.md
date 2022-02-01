@@ -1,5 +1,7 @@
 # SmartGuitarAmp
 
+[![Downloads](https://img.shields.io/github/downloads/GuitarML/SmartGuitarAmp/total)](https://somsubhra.github.io/github-release-stats/?username=GuitarML&repository=SmartGuitarAmp&page=1&per_page=30)
+
 Guitar plugin made with JUCE that uses neural network models to emulate real world hardware.
 
 See video demo on [YouTube](https://youtu.be/oIX5y-nyhcY)
