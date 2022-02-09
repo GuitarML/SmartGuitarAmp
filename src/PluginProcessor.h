@@ -15,6 +15,28 @@
 #include <nlohmann/json.hpp>
 #include "RTNeuralLSTM.h"
 
+
+#define CLEAN_GAIN_ID "cleangain"
+#define CLEAN_GAIN_NAME "CleanGain"
+#define CLEAN_BASS_ID "cleanbass"
+#define CLEAN_BASS_NAME "CleanBass"
+#define CLEAN_MID_ID "cleanmid"
+#define CLEAN_MID_NAME "CleanMid"
+#define CLEAN_TREBLE_ID "cleantreble"
+#define CLEAN_TREBLE_NAME "CleanTreble"
+#define LEAD_GAIN_ID "leadgain"
+#define LEAD_GAIN_NAME "LeadGain"
+#define LEAD_BASS_ID "leadbass"
+#define LEAD_BASS_NAME "LeadBass"
+#define LEAD_MID_ID "leadmid"
+#define LEAD_MID_NAME "LeadMid"
+#define LEAD_TREBLE_ID "leadtreble"
+#define LEAD_TREBLE_NAME "LeadTreble"
+#define PRESENCE_ID "presence"
+#define PRESENCE_NAME "Presence"
+#define MASTER_ID "master"
+#define MASTER_NAME "Master"
+
 //==============================================================================
 /**
 */
@@ -58,8 +80,6 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    void loadConfigAmp();
-    void loadConfig(File configFile);
 
     // Overdrive Pedal
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
@@ -97,6 +117,7 @@ public:
 
     AudioProcessorValueTreeState treeState;
 
+
 private:
     Eq4Band eq4band; // Amp EQ
 
@@ -109,7 +130,7 @@ private:
 
     chowdsp::ResampledProcess<chowdsp::ResamplingTypes::SRCResampler<>> resampler;
 
-    //dsp::IIR::Filter<float> dcBlocker;  // Unused for SmartAmp plugin, leaving commented as template for future plugins
+    dsp::IIR::Filter<float> dcBlocker;  // Unused for SmartAmp plugin, leaving commented as template for future plugins
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SmartAmpAudioProcessor)

@@ -1,6 +1,8 @@
 #add_subdirectory(headless)
 
-target_sources(TS-M1N3 PRIVATE
+target_sources(SmartAmp PRIVATE
+        Eq4Band.cpp
+        Eq4Band.h
 	myLookAndFeel.cpp
 	myLookAndFeel.h
 	PluginEditor.cpp
@@ -11,4 +13,4 @@ target_sources(TS-M1N3 PRIVATE
 	RTNeuralLSTM.h
 )
 
-#target_precompile_headers(TS-M1N3 PRIVATE pch.h)
+#target_precompile_headers(SmartAmp PRIVATE pch.h)

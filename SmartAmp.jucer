@@ -5,25 +5,23 @@
               jucerFormatVersion="1" pluginCode="sa1" maxBinaryFileSize="20971520">
   <MAINGROUP id="ZrSGof" name="SmartAmp">
     <GROUP id="{0250E2E8-A733-0AA7-0A08-97085228CF87}" name="Resources">
-      <FILE id="fzEsS4" name="amp_clean.jpg" compile="0" resource="1" file="../../resources/amp_clean.jpg"/>
-      <FILE id="MUKtMi" name="amp_lead.jpg" compile="0" resource="1" file="../../resources/amp_lead.jpg"/>
-      <FILE id="ZHwe69" name="amp_off.jpg" compile="0" resource="1" file="../../resources/amp_off.jpg"/>
-      <FILE id="XoWq0R" name="bluej_clean_p0088.json" compile="0" resource="1"
-            file="../../models/bluej_clean_p0088.json"/>
-      <FILE id="ov9ufS" name="bluej_fullD_p0153.json" compile="0" resource="1"
-            file="../../models/bluej_fullD_p0153.json"/>
-      <FILE id="jmOgHo" name="knob_silver.png" compile="0" resource="1" file="../../resources/knob_silver.png"/>
-      <FILE id="Kaw2lp" name="led_blue_off.png" compile="0" resource="1"
-            file="../../resources/led_blue_off.png"/>
-      <FILE id="Y8qZzL" name="led_blue_on.png" compile="0" resource="1" file="../../resources/led_blue_on.png"/>
-      <FILE id="wxluia" name="led_blue_on_off.png" compile="0" resource="1"
-            file="../../resources/led_blue_on_off.png"/>
-      <FILE id="dGDile" name="led_red_off.png" compile="0" resource="1" file="../../resources/led_red_off.png"/>
-      <FILE id="lXezWE" name="led_red_on.png" compile="0" resource="1" file="../../resources/led_red_on.png"/>
-      <FILE id="kv1E0Y" name="power_switch_down.png" compile="0" resource="1"
-            file="../../resources/power_switch_down.png"/>
-      <FILE id="dmRdj4" name="power_switch_up.png" compile="0" resource="1"
-            file="../../resources/power_switch_up.png"/>
+      <FILE id="xoYVgp" name="amp_clean.jpg" compile="0" resource="1" file="resources/amp_clean.jpg"/>
+      <FILE id="lo27Fe" name="amp_lead.jpg" compile="0" resource="1" file="resources/amp_lead.jpg"/>
+      <FILE id="GNU2dM" name="amp_off.jpg" compile="0" resource="1" file="resources/amp_off.jpg"/>
+      <FILE id="YkMOWj" name="BluesJr.json" compile="0" resource="1" file="models/BluesJr.json"/>
+      <FILE id="n4tek1" name="HT40_Overdrive.json" compile="0" resource="1"
+            file="models/HT40_Overdrive.json"/>
+      <FILE id="sHEUZT" name="knob_silver.png" compile="0" resource="1" file="resources/knob_silver.png"/>
+      <FILE id="LiSBxV" name="led_blue_off.png" compile="0" resource="1"
+            file="resources/led_blue_off.png"/>
+      <FILE id="DojUrJ" name="led_blue_on.png" compile="0" resource="1" file="resources/led_blue_on.png"/>
+      <FILE id="qDtZBe" name="logo.png" compile="0" resource="1" file="resources/logo.png"/>
+      <FILE id="Pk7iAo" name="power_switch_down.png" compile="0" resource="1"
+            file="resources/power_switch_down.png"/>
+      <FILE id="FDLvP7" name="power_switch_up.png" compile="0" resource="1"
+            file="resources/power_switch_up.png"/>
+      <FILE id="WtCoZE" name="SmartAmp.ico" compile="0" resource="1" file="resources/SmartAmp.ico"/>
+      <FILE id="xvJDTr" name="SmartAmp.png" compile="0" resource="1" file="resources/SmartAmp.png"/>
     </GROUP>
     <GROUP id="{0C30E6D7-5E80-A33B-74CB-A4BA09196080}" name="Source">
       <FILE id="MxQvR1" name="Eq4Band.cpp" compile="1" resource="0" file="src/Eq4Band.cpp"/>
@@ -71,7 +69,8 @@
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="SmartAmp"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="SmartAmp" headerPath="C:\Users\rache\Desktop\dev\eigen-3.3.7&#10;C:\Users\KBloemer\Desktop\Archive\eigen-3.3.9\eigen-3.3.9"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="SmartAmp" defines="USE_XSIMD=1"
+                       headerPath="modules\json\include&#10;modules\RTNeural&#10;modules\RTNeural\modules\xsimd\include&#10;modules\libsamplerate\include"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_video"/>
@@ -92,6 +91,30 @@
         <MODULEPATH id="juce_audio_basics"/>
       </MODULEPATHS>
     </VS2019>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_video"/>
+        <MODULEPATH id="juce_opengl"/>
+        <MODULEPATH id="juce_gui_extra"/>
+        <MODULEPATH id="juce_gui_basics"/>
+        <MODULEPATH id="juce_graphics"/>
+        <MODULEPATH id="juce_events"/>
+        <MODULEPATH id="juce_dsp"/>
+        <MODULEPATH id="juce_data_structures"/>
+        <MODULEPATH id="juce_cryptography"/>
+        <MODULEPATH id="juce_core"/>
+        <MODULEPATH id="juce_audio_utils"/>
+        <MODULEPATH id="juce_audio_processors"/>
+        <MODULEPATH id="juce_audio_plugin_client"/>
+        <MODULEPATH id="juce_audio_formats"/>
+        <MODULEPATH id="juce_audio_devices"/>
+        <MODULEPATH id="juce_audio_basics"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

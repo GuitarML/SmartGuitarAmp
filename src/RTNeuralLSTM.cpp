@@ -62,12 +62,6 @@ void RT_LSTM::process(const float* inData, float param1, float param2, float* ou
     } else {
         changedParam1 = false;
     }
-    if (param2 != previousParam2) {
-        steppedValue2 = (param2 - previousParam2) / numSamples;
-        changedParam2 = true;
-    } else {
-        changedParam2 = false;
-    }
 
     for (int i = 0; i < numSamples; ++i) {
         inArray[0] = inData[i];
@@ -78,15 +72,9 @@ void RT_LSTM::process(const float* inData, float param1, float param2, float* ou
         } else {
             inArray[1] = param1;
         }
-        // Perform ramped value calculations to smooth out sound
-        if (changedParam2 == true) {
-            inArray[2] = previousParam2 + (i + 1) * steppedValue2;
-        } else {
-            inArray[2] = param2;
-        }
+ 
         // Run forward pass through neural network
         outData[i] = model_cond2.forward(inArray) + inData[i];
     }
     previousParam1 = param1;
-    previousParam2 = param2;
 }

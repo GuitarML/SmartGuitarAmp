@@ -25,10 +25,10 @@ target_link_libraries(juce_plugin_modules
         juce::juce_audio_utils
         juce::juce_audio_plugin_client
         juce::juce_dsp
-	    nlohmann_json::nlohmann_json
-	    RTNeural
-	    samplerate
-	    chowdsp_dsp
+	nlohmann_json::nlohmann_json
+	RTNeural
+	samplerate
+	chowdsp_dsp
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags

@@ -22,6 +22,16 @@ SmartAmpAudioProcessor::SmartAmpAudioProcessor()
         .withOutput("Output", AudioChannelSet::stereo(), true)
 #endif
     ),
+    treeState(*this, nullptr, "PARAMETER", { std::make_unique<AudioParameterFloat>(CLEAN_GAIN_ID, CLEAN_GAIN_NAME, NormalisableRange<float>(-10.0f, 10.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(CLEAN_BASS_ID, CLEAN_BASS_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(CLEAN_MID_ID, CLEAN_MID_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(CLEAN_TREBLE_ID, CLEAN_TREBLE_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(LEAD_GAIN_ID, LEAD_GAIN_NAME, NormalisableRange<float>(-10.0f, 10.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(LEAD_BASS_ID, LEAD_BASS_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(LEAD_MID_ID, LEAD_MID_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(LEAD_TREBLE_ID, LEAD_TREBLE_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(PRESENCE_ID, PRESENCE_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(MASTER_ID, MASTER_NAME, NormalisableRange<float>(-36.0f, 0.0f, 0.01f), 0.0f) })
 
     
 #endif
@@ -101,20 +111,19 @@ void SmartAmpAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     // initialisation that you need..
     LSTM.reset();
 
-    // prepare resampler for target sample rate: 48 kHz
-    constexpr double targetSampleRate = 48000.0;
-    resampler.prepareWithTargetSampleRate ({ sampleRate, (uint32) samplesPerBlock, 1 }, targetSampleRate);
+    // prepare resampler for target sample rate: 44.1 kHz
+    constexpr double targetSampleRate = 44100.0;
+    resampler.prepareWithTargetSampleRate({ sampleRate, (uint32)samplesPerBlock, 1 }, targetSampleRate);
 
-    // load 48 kHz sample rate model
-    MemoryInputStream jsonInputStream(BinaryData::model_ts9_48k_cond2_json, BinaryData::model_ts9_48k_cond2_jsonSize, false);
+    MemoryInputStream jsonInputStream(BinaryData::BluesJr_json, BinaryData::BluesJr_jsonSize, false);
     nlohmann::json weights_json = nlohmann::json::parse(jsonInputStream.readEntireStreamAsString().toStdString());
 
     LSTM.load_json3(weights_json);
 
     // set up DC blocker
-    //dcBlocker.coefficients = dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 35.0f);
-    //dsp::ProcessSpec spec{ sampleRate, static_cast<uint32> (samplesPerBlock), 2 };
-    //dcBlocker.prepare(spec);
+    dcBlocker.coefficients = dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 35.0f);
+    dsp::ProcessSpec spec{ sampleRate, static_cast<uint32> (samplesPerBlock), 2 };
+    dcBlocker.prepare(spec);
 
 }
 
@@ -155,31 +164,57 @@ void SmartAmpAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
     // Setup Audio Data
     const int numSamples = buffer.getNumSamples();
     const int numInputChannels = getTotalNumInputChannels();
+    const int sampleRate = getSampleRate();
 
 
     // Amp =============================================================================
     if (amp_state == 1) {
-        //    EQ TODO before or after wavenet? (Presence; Bass, Mid, Treble for both channels)
-        eq4band.process(buffer, midiMessages, numSamples, numInputChannels);
+        //    EQ (Presence, Bass, Mid, Treble)
+        eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
-        if (amp_lead == 1) {// if clean channel eq/gain
-            
-            buffer.applyGain(ampCleanDrive);
 
+        // Apply ramped changes for gain smoothing
+        if (ampDrive == previousAmpDrive)
+        {
+            buffer.applyGain(ampDrive);
         }
-        else {// else lead channel eq/gain
-
-            buffer.applyGain(ampLeadDrive);
-
+        else {
+            buffer.applyGainRamp(0, (int)block44k.getNumSamples(), previousAmpDrive, ampDrive);
+            previousAmpDrive = ampDrive;
         }
 
+        // resample to target sample rate
+        auto block = dsp::AudioBlock<float>(buffer.getArrayOfWritePointers(), 1, numSamples);
+        auto block44k = resampler.processIn(block);
 
-        //    Master Volume 
-        buffer.applyGain(ampMaster);
+        // Apply LSTM model
+        LSTM.process(block44k.getChannelPointer(0), block44k.getChannelPointer(0), (int)block44k.getNumSamples());
 
+        // resample back to original sample rate
+        resampler.processOut(block44k, block);
 
+        // Master Volume 
+        // Apply ramped changes for gain smoothing
+        if (ampMaster == previousAmpMaster)
+        {
+            buffer.applyGain(ampMaster);
+        }
+        else {
+            buffer.applyGainRamp(0, (int)block44k.getNumSamples(), previousAmpMaster, ampMaster);
+            previousAmpMaster = ampMaster;
+        }
+
+        // Custom Level for quieter models
+        if (current_model_index == 2) {
+            buffer.applyGain(2.0);
+        }
     }
-    
+
+    // process DC blocker
+    auto monoBlock = dsp::AudioBlock<float>(buffer).getSingleChannelBlock(0);
+    dcBlocker.process(dsp::ProcessContextReplacing<float>(monoBlock));
+
+    // Handle stereo input by copying channel 1 to channel 2
     for (int ch = 1; ch < buffer.getNumChannels(); ++ch)
         buffer.copyFrom(ch, 0, buffer, 0, 0, buffer.getNumSamples());
 }
@@ -195,20 +230,47 @@ AudioProcessorEditor* SmartAmpAudioProcessor::createEditor()
     return new SmartAmpAudioProcessorEditor (*this);
 }
 
-//==============================================================================
-void SmartAmpAudioProcessor::getStateInformation (MemoryBlock& destData)
+void ChameleonAudioProcessor::getStateInformation(MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+
+    auto state = treeState.copyState();
+    std::unique_ptr<XmlElement> xml(state.createXml());
+    xml->setAttribute("current_tone", current_model_index);
+    copyXmlToBinary(*xml, destData);
 }
 
-void SmartAmpAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void ChameleonAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-}
 
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
+    {
+        if (xmlState->hasTagName(treeState.state.getType()))
+        {
+            treeState.replaceState(juce::ValueTree::fromXml(*xmlState));
+            current_model_index = xmlState->getIntAttribute("current_tone");
+
+            switch (current_model_index)
+            {
+            case 0:
+                loadConfig(red_tone);
+                break;
+            case 1:
+                loadConfig(gold_tone);
+                break;
+            }
+
+            if (auto* editor = dynamic_cast<ChameleonAudioProcessorEditor*> (getActiveEditor()))
+                editor->resetImages();
+        }
+    }
+}
 
 
 float SmartAmpAudioProcessor::convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max)

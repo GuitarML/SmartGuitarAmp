@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X deployment target")
-project(SmartAmp VERSION 1.0.0)
+project(SmartAmp VERSION 2.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -30,8 +30,8 @@ juce_add_plugin(SmartAmp
 juce_generate_juce_header(SmartAmp)
 
 # add sources
-add_subdirectory(Source)
-include_directories(Source)
+add_subdirectory(src)
+include_directories(src)
 add_subdirectory(resources)
 
 target_compile_definitions(SmartAmp

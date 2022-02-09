@@ -1,15 +1,19 @@
 juce_add_binary_data(BinaryData SOURCES
-    footswitch_down.png
-    footswitch_up.png
-    knob2.png
-    led_red_off.png
-    led_red_on.png
+    amp_clean.jpg
+    amp_lead.jpg
+    amp_off.jpg
+    amp_pic.png
+    knob_silver.png
+    led_blue_off.png
+    led_blue_on.png
+    led_blue_on_off.png
     logo.png
-    ts_background_black.jpg
+    power_switch_down.png
+    power_switch_up.png
     SmartAmp.ico
     SmartAmp.png
-    ../models/model_ts9_48k_cond2.json
-    ../models/model_ts9_cond2.json
+    ../models/BluesJr.json
+    ../models/HT40_Overdrive.json
 )
 
 # Need to build BinaryData with -fPIC flag on Linux
