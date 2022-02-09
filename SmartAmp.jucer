@@ -26,35 +26,21 @@
             file="../../resources/power_switch_up.png"/>
     </GROUP>
     <GROUP id="{0C30E6D7-5E80-A33B-74CB-A4BA09196080}" name="Source">
-      <FILE id="nHO9o4" name="Activations.cpp" compile="1" resource="0" file="Source/Activations.cpp"/>
-      <FILE id="pB2Uy9" name="Activations.h" compile="0" resource="0" file="Source/Activations.h"/>
-      <FILE id="HFxIGS" name="Convolution.cpp" compile="1" resource="0" file="Source/Convolution.cpp"/>
-      <FILE id="ykCs7c" name="Convolution.h" compile="0" resource="0" file="Source/Convolution.h"/>
-      <FILE id="OEMCNQ" name="ConvolutionLayer.cpp" compile="1" resource="0"
-            file="Source/ConvolutionLayer.cpp"/>
-      <FILE id="mCupON" name="ConvolutionLayer.h" compile="0" resource="0"
-            file="Source/ConvolutionLayer.h"/>
-      <FILE id="RBB3Df" name="ConvolutionStack.cpp" compile="1" resource="0"
-            file="Source/ConvolutionStack.cpp"/>
-      <FILE id="QiS3tw" name="ConvolutionStack.h" compile="0" resource="0"
-            file="Source/ConvolutionStack.h"/>
-      <FILE id="cc0yTU" name="Eq4Band.cpp" compile="1" resource="0" file="Source/Eq4Band.cpp"/>
-      <FILE id="V8n6fV" name="Eq4Band.h" compile="0" resource="0" file="Source/Eq4Band.h"/>
-      <FILE id="v2KZQA" name="myLookAndFeel.cpp" compile="1" resource="0"
-            file="Source/myLookAndFeel.cpp"/>
-      <FILE id="IK3E75" name="myLookAndFeel.h" compile="0" resource="0" file="Source/myLookAndFeel.h"/>
-      <FILE id="yPpxqN" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="wc9ORq" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-      <FILE id="FXtuA5" name="PluginProcessor.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor.cpp"/>
-      <FILE id="fdQhKJ" name="PluginProcessor.h" compile="0" resource="0"
-            file="Source/PluginProcessor.h"/>
-      <FILE id="BZWjtW" name="WaveNet.cpp" compile="1" resource="0" file="Source/WaveNet.cpp"/>
-      <FILE id="ZND1h7" name="WaveNet.h" compile="0" resource="0" file="Source/WaveNet.h"/>
-      <FILE id="b1IRpO" name="WaveNetLoader.cpp" compile="1" resource="0"
-            file="Source/WaveNetLoader.cpp"/>
-      <FILE id="DKQUas" name="WaveNetLoader.h" compile="0" resource="0" file="Source/WaveNetLoader.h"/>
+      <FILE id="MxQvR1" name="Eq4Band.cpp" compile="1" resource="0" file="src/Eq4Band.cpp"/>
+      <FILE id="dqUD5o" name="Eq4Band.h" compile="0" resource="0" file="src/Eq4Band.h"/>
+      <FILE id="KvnTeG" name="myLookAndFeel.cpp" compile="1" resource="0"
+            file="src/myLookAndFeel.cpp"/>
+      <FILE id="hAkagL" name="myLookAndFeel.h" compile="0" resource="0" file="src/myLookAndFeel.h"/>
+      <FILE id="zQW1ch" name="PluginEditor.cpp" compile="1" resource="0"
+            file="src/PluginEditor.cpp"/>
+      <FILE id="rLJdT4" name="PluginEditor.h" compile="0" resource="0" file="src/PluginEditor.h"/>
+      <FILE id="z0bfQU" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="src/PluginProcessor.cpp"/>
+      <FILE id="PHHbCN" name="PluginProcessor.h" compile="0" resource="0"
+            file="src/PluginProcessor.h"/>
+      <FILE id="zd2hjy" name="RTNeuralLSTM.cpp" compile="1" resource="0"
+            file="src/RTNeuralLSTM.cpp"/>
+      <FILE id="nugX3M" name="RTNeuralLSTM.h" compile="0" resource="0" file="src/RTNeuralLSTM.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

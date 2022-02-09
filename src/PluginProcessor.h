@@ -11,19 +11,19 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "WaveNet.h"
-#include "WaveNetLoader.h"
 #include "Eq4Band.h"
+#include <nlohmann/json.hpp>
+#include "RTNeuralLSTM.h"
 
 //==============================================================================
 /**
 */
-class WaveNetVaAudioProcessor  : public AudioProcessor
+class SmartAmpAudioProcessor  : public AudioProcessor
 {
 public:
     //==============================================================================
-    WaveNetVaAudioProcessor();
-    ~WaveNetVaAudioProcessor();
+    SmartAmpAudioProcessor();
+    ~SmartAmpAudioProcessor();
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -91,10 +91,14 @@ public:
     float ampLeadGainKnobState = 10.0;
     float ampMasterKnobState = -12.0;
 
-private:
-    WaveNet waveNet; // Amp Clean Channel / Lead Channel
-    Eq4Band eq4band; // Amp EQ
+    bool lstm_state = true;
 
+    RT_LSTM LSTM;
+
+    AudioProcessorValueTreeState treeState;
+
+private:
+    Eq4Band eq4band; // Amp EQ
 
     // Amp
     float ampCleanDrive = 1.0;
@@ -103,6 +107,10 @@ private:
 
     var dummyVar;
 
+    chowdsp::ResampledProcess<chowdsp::ResamplingTypes::SRCResampler<>> resampler;
+
+    //dsp::IIR::Filter<float> dcBlocker;  // Unused for SmartAmp plugin, leaving commented as template for future plugins
+
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveNetVaAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SmartAmpAudioProcessor)
 };

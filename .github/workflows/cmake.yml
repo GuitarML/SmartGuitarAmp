@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+    - develop
+  pull_request:
+    branches:
+    - main
+    - develop
+
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    if: contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
+    name: Test plugin on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false # show all errors for each platform (vs. cancel jobs on error)
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest] 
+    
+    steps:
+    - name: Install Linux Deps
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt install libasound2-dev libcurl4-openssl-dev libx11-dev libxinerama-dev libxext-dev libfreetype6-dev libwebkit2gtk-4.0-dev libglu1-mesa-dev libjack-jackd2-dev lv2-dev
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
+    - name: Get latest CMake
+      uses: lukka/get-cmake@latest
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Configure
+      shell: bash
+      run: cmake -Bbuild
+
+    - name: Build
+      shell: bash
+      run: cmake --build build --config Release --parallel 4
+
+    ## Validation step for windows does not resolve, need to fix
+    #- name: Validate
+    #  if: runner.os == 'Windows'
+    #  run: bash validate.sh
+
+    - name: Upload Linux Artifact GitHub Action
+      if: runner.os == 'Linux'
+      uses: actions/upload-artifact@v2
+      with: 
+        name: linux-assets
+        path: /home/runner/work/SmartAmp/SmartAmp/build/SmartAmp_artefacts
+        
+    - name: Upload Mac Artifact GitHub Action
+      if: runner.os == 'macOS'
+      uses: actions/upload-artifact@v2
+      with:
+        name: mac-assets
+        path: /Users/runner/work/SmartAmp/SmartAmp/build/SmartAmp_artefacts
+        
+    - name: Upload Windows Artifact GitHub Action
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v2
+      with:
+        name: win-assets
+        path: D:/a/SmartAmp/SmartAmp/build/SmartAmp_artefacts

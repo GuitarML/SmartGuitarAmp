@@ -12,7 +12,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProcessor& p)
+SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
     // Make sure that before the constructor has finished, you've set the
@@ -165,12 +165,12 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     }
 }
 
-WaveNetVaAudioProcessorEditor::~WaveNetVaAudioProcessorEditor()
+SmartAmpAudioProcessorEditor::~SmartAmpAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void WaveNetVaAudioProcessorEditor::paint (Graphics& g)
+void SmartAmpAudioProcessorEditor::paint (Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     //g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
@@ -238,7 +238,7 @@ void WaveNetVaAudioProcessorEditor::paint (Graphics& g)
     }
 }
 
-void WaveNetVaAudioProcessorEditor::resized()
+void SmartAmpAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
@@ -263,7 +263,7 @@ void WaveNetVaAudioProcessorEditor::resized()
     ampLED.setBounds(975, 160, 15, 25);
 }
 
-void WaveNetVaAudioProcessorEditor::loadButtonClicked()
+void SmartAmpAudioProcessorEditor::loadButtonClicked()
 {
     FileChooser chooser("Select a .json tone...",
         {},
@@ -280,7 +280,7 @@ void WaveNetVaAudioProcessorEditor::loadButtonClicked()
     }
 }
 
-void WaveNetVaAudioProcessorEditor::buttonClicked(juce::Button* button)
+void SmartAmpAudioProcessorEditor::buttonClicked(juce::Button* button)
 {
     if (button == &ampOnButton) {
         ampOnButtonClicked();
@@ -292,7 +292,7 @@ void WaveNetVaAudioProcessorEditor::buttonClicked(juce::Button* button)
 }
 
 
-void WaveNetVaAudioProcessorEditor::ampOnButtonClicked() {
+void SmartAmpAudioProcessorEditor::ampOnButtonClicked() {
     if (processor.amp_state == 0) {
         processor.amp_state = 1;
     }
@@ -303,7 +303,7 @@ void WaveNetVaAudioProcessorEditor::ampOnButtonClicked() {
     repaint();
 }
 
-void WaveNetVaAudioProcessorEditor::ampCleanLeadButtonClicked() {
+void SmartAmpAudioProcessorEditor::ampCleanLeadButtonClicked() {
     if (processor.amp_lead == 0) {
         processor.amp_lead = 1;
         processor.loadConfigAmp();
@@ -322,7 +322,7 @@ void WaveNetVaAudioProcessorEditor::ampCleanLeadButtonClicked() {
     repaint();
 }
 
-void WaveNetVaAudioProcessorEditor::sliderValueChanged(Slider* slider)
+void SmartAmpAudioProcessorEditor::sliderValueChanged(Slider* slider)
 {
     // Amp
     if (slider == &ampCleanGainKnob)
@@ -356,7 +356,7 @@ void WaveNetVaAudioProcessorEditor::sliderValueChanged(Slider* slider)
 
 }
 
-void WaveNetVaAudioProcessorEditor::resetImages()
+void SmartAmpAudioProcessorEditor::resetImages()
 {
     // Set On/Off amp graphic
     if (processor.amp_state == 0) {

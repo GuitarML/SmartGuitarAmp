@@ -12,7 +12,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-WaveNetVaAudioProcessor::WaveNetVaAudioProcessor()
+SmartAmpAudioProcessor::SmartAmpAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
     : AudioProcessor(BusesProperties()
 #if ! JucePlugin_IsMidiEffect
@@ -22,23 +22,23 @@ WaveNetVaAudioProcessor::WaveNetVaAudioProcessor()
         .withOutput("Output", AudioChannelSet::stereo(), true)
 #endif
     ),
-    waveNet(1, 1, 1, 1, "linear", { 1 })
+
     
 #endif
 {
 }
 
-WaveNetVaAudioProcessor::~WaveNetVaAudioProcessor()
+SmartAmpAudioProcessor::~SmartAmpAudioProcessor()
 {
 }
 
 //==============================================================================
-const String WaveNetVaAudioProcessor::getName() const
+const String SmartAmpAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool WaveNetVaAudioProcessor::acceptsMidi() const
+bool SmartAmpAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -47,7 +47,7 @@ bool WaveNetVaAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool WaveNetVaAudioProcessor::producesMidi() const
+bool SmartAmpAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -56,7 +56,7 @@ bool WaveNetVaAudioProcessor::producesMidi() const
    #endif
 }
 
-bool WaveNetVaAudioProcessor::isMidiEffect() const
+bool SmartAmpAudioProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -65,51 +65,67 @@ bool WaveNetVaAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double WaveNetVaAudioProcessor::getTailLengthSeconds() const
+double SmartAmpAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int WaveNetVaAudioProcessor::getNumPrograms()
+int SmartAmpAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int WaveNetVaAudioProcessor::getCurrentProgram()
+int SmartAmpAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void WaveNetVaAudioProcessor::setCurrentProgram (int index)
+void SmartAmpAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const String WaveNetVaAudioProcessor::getProgramName (int index)
+const String SmartAmpAudioProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void WaveNetVaAudioProcessor::changeProgramName (int index, const String& newName)
+void SmartAmpAudioProcessor::changeProgramName (int index, const String& newName)
 {
 }
 
 //==============================================================================
-void WaveNetVaAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void SmartAmpAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    waveNet.prepareToPlay(samplesPerBlock);
+    LSTM.reset();
+
+    // prepare resampler for target sample rate: 48 kHz
+    constexpr double targetSampleRate = 48000.0;
+    resampler.prepareWithTargetSampleRate ({ sampleRate, (uint32) samplesPerBlock, 1 }, targetSampleRate);
+
+    // load 48 kHz sample rate model
+    MemoryInputStream jsonInputStream(BinaryData::model_ts9_48k_cond2_json, BinaryData::model_ts9_48k_cond2_jsonSize, false);
+    nlohmann::json weights_json = nlohmann::json::parse(jsonInputStream.readEntireStreamAsString().toStdString());
+
+    LSTM.load_json3(weights_json);
+
+    // set up DC blocker
+    //dcBlocker.coefficients = dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 35.0f);
+    //dsp::ProcessSpec spec{ sampleRate, static_cast<uint32> (samplesPerBlock), 2 };
+    //dcBlocker.prepare(spec);
+
 }
 
-void WaveNetVaAudioProcessor::releaseResources()
+void SmartAmpAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool WaveNetVaAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool SmartAmpAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     ignoreUnused (layouts);
@@ -132,7 +148,7 @@ bool WaveNetVaAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 }
 #endif
 
-void WaveNetVaAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
+void SmartAmpAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
     ScopedNoDenormals noDenormals;
 
@@ -157,16 +173,10 @@ void WaveNetVaAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
 
         }
 
-        //    Wavenet, load json for waveNet2 based on lead/clean switch
-        waveNet.process(buffer.getArrayOfReadPointers(), buffer.getArrayOfWritePointers(), buffer.getNumSamples());
 
         //    Master Volume 
         buffer.applyGain(ampMaster);
 
-        //    Apply levelAdjust from model param (for adjusting quiet or loud models)
-        if ( waveNet.levelAdjust != 0.0 ) {
-            buffer.applyGain(waveNet.levelAdjust);
-        }
 
     }
     
@@ -175,83 +185,33 @@ void WaveNetVaAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
 }
 
 //==============================================================================
-bool WaveNetVaAudioProcessor::hasEditor() const
+bool SmartAmpAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-AudioProcessorEditor* WaveNetVaAudioProcessor::createEditor()
+AudioProcessorEditor* SmartAmpAudioProcessor::createEditor()
 {
-    return new WaveNetVaAudioProcessorEditor (*this);
+    return new SmartAmpAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void WaveNetVaAudioProcessor::getStateInformation (MemoryBlock& destData)
+void SmartAmpAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
 
-void WaveNetVaAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void SmartAmpAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 }
 
 
-void WaveNetVaAudioProcessor::loadConfigAmp() 
-{
-    // Load Second Wavenet
-    this->suspendProcessing(true);
-    
-    if (amp_lead == 0) { // if lead on 
-        WaveNetLoader loader2(BinaryData::bluej_fullD_p0153_json);
-        float levelAdjust = loader2.levelAdjust;
-        int numChannels2 = loader2.numChannels;
-        int inputChannels2 = loader2.inputChannels;
-        int outputChannels2 = loader2.outputChannels;
-        int filterWidth2 = loader2.filterWidth;
-        std::vector<int> dilations2 = loader2.dilations;
-        std::string activation2 = loader2.activation;
-        waveNet.setParams(inputChannels2, outputChannels2, numChannels2, filterWidth2, activation2,
-            dilations2, levelAdjust);
-        loader2.loadVariables(waveNet);
-    } else { // else if clean on
-        WaveNetLoader loader2(BinaryData::bluej_clean_p0088_json);
-        float levelAdjust = loader2.levelAdjust;
-        int numChannels2 = loader2.numChannels;
-        int inputChannels2 = loader2.inputChannels;
-        int outputChannels2 = loader2.outputChannels;
-        int filterWidth2 = loader2.filterWidth;
-        std::vector<int> dilations2 = loader2.dilations;
-        std::string activation2 = loader2.activation;
-        waveNet.setParams(inputChannels2, outputChannels2, numChannels2, filterWidth2, activation2,
-            dilations2, levelAdjust);
-        loader2.loadVariables(waveNet);
-    }
-    
-    this->suspendProcessing(false);
-}
 
-void WaveNetVaAudioProcessor::loadConfig(File configFile)
-{
-    this->suspendProcessing(true);
-    WaveNetLoader loader(dummyVar, configFile);
-    float levelAdjust = loader.levelAdjust;
-    int numChannels = loader.numChannels;
-    int inputChannels = loader.inputChannels;
-    int outputChannels = loader.outputChannels;
-    int filterWidth = loader.filterWidth;
-    std::vector<int> dilations = loader.dilations;
-    std::string activation = loader.activation;
-    waveNet.setParams(inputChannels, outputChannels, numChannels, filterWidth, activation,
-        dilations, levelAdjust);
-    loader.loadVariables(waveNet);
-    this->suspendProcessing(false);
-}
-
-float WaveNetVaAudioProcessor::convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max)
+float SmartAmpAudioProcessor::convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max)
 {
     float b = log(y_max / y_min) / (x_max - x_min);
     float a = y_max / exp(b * x_max);
@@ -259,32 +219,32 @@ float WaveNetVaAudioProcessor::convertLogScale(float in_value, float x_min, floa
     return converted_value;
 }
 
-void WaveNetVaAudioProcessor::set_ampCleanDrive(float db_ampCleanDrive)
+void SmartAmpAudioProcessor::set_ampCleanDrive(float db_ampCleanDrive)
 {
     ampCleanDrive = decibelToLinear(db_ampCleanDrive);
     ampCleanGainKnobState = db_ampCleanDrive;
 }
 
-void WaveNetVaAudioProcessor::set_ampLeadDrive(float db_ampLeadDrive)
+void SmartAmpAudioProcessor::set_ampLeadDrive(float db_ampLeadDrive)
 {
     ampLeadDrive = decibelToLinear(db_ampLeadDrive);
     ampLeadGainKnobState = db_ampLeadDrive;
 }
 
-void WaveNetVaAudioProcessor::set_ampMaster(float db_ampMaster)
+void SmartAmpAudioProcessor::set_ampMaster(float db_ampMaster)
 {
     ampMaster = decibelToLinear(db_ampMaster);
     ampMasterKnobState = db_ampMaster;
 }
 
-void WaveNetVaAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider)
+void SmartAmpAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider)
 {
     eq4band.setParameters(bass_slider, mid_slider, treble_slider, presence_slider);
 
     ampPresenceKnobState = presence_slider;
 }
 
-float WaveNetVaAudioProcessor::decibelToLinear(float dbValue)
+float SmartAmpAudioProcessor::decibelToLinear(float dbValue)
 {
     return powf(10.0, dbValue/20.0);
 }
@@ -293,5 +253,5 @@ float WaveNetVaAudioProcessor::decibelToLinear(float dbValue)
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new WaveNetVaAudioProcessor();
+    return new SmartAmpAudioProcessor();
 }

@@ -17,14 +17,14 @@
 //==============================================================================
 /**
 */
-class WaveNetVaAudioProcessorEditor  : public AudioProcessorEditor,
+class SmartAmpAudioProcessorEditor  : public AudioProcessorEditor,
                                        private Button::Listener,
                                        private Slider::Listener
                                 
 {
 public:
-    WaveNetVaAudioProcessorEditor (WaveNetVaAudioProcessor&);
-    ~WaveNetVaAudioProcessorEditor();
+    SmartAmpAudioProcessorEditor (SmartAmpAudioProcessor&);
+    ~SmartAmpAudioProcessorEditor();
 
     //==============================================================================
     void paint (Graphics&) override;
@@ -35,7 +35,7 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    WaveNetVaAudioProcessor& processor;
+    SmartAmpAudioProcessor& processor;
 
     // Amp Widgets
     Slider ampPresenceKnob;
@@ -72,5 +72,5 @@ private:
     void ampCleanLeadButtonClicked();
     void resetImages();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveNetVaAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SmartAmpAudioProcessorEditor)
 };
