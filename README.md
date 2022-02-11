@@ -1,53 +1,57 @@
 # SmartGuitarAmp
-
+[![CI](https://github.com/GuitarML/SmartGuitarAmp/actions/workflows/cmake.yml/badge.svg)](https://github.com/GuitarML/SmartGuitarAmp/actions/workflows/cmake.yml) 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-brightgreen.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Downloads](https://img.shields.io/github/downloads/GuitarML/SmartGuitarAmp/total)](https://somsubhra.github.io/github-release-stats/?username=GuitarML&repository=SmartGuitarAmp&page=1&per_page=30)
 
 Guitar plugin made with JUCE that uses neural network models to emulate real world hardware.
 
-See video demo on [YouTube](https://youtu.be/oIX5y-nyhcY)
-
-This plugin uses a WaveNet model to recreate the sound of real world hardware. The current version
-models a small tube amp, with the ability to add more options in the future. There is a clean/lead channel, 
-which is equivalent to the amp's clean and full drive settings. Gain and EQ knobs were added to 
-modulate the modeled sound.
+This plugin uses a LSTM neural network model to recreate the sound of real world hardware. Version 2 emulates
+a Fender Blues Jr. on the clean channel and a Blackstar HT40 on the lead channel. The Gain parameter is conditioned to fully replicate the gain knob from the actual amplifier.
+A traditional 4-band EQ algorithm is used for Bass, Mid, Treble, and Presence on each channel. 
+ 
+Note: For the previous version of SmartAmp using the WaveNet model, see version 1.3 on the release page.
+Version 2 was created using the LSTM model to improve CPU usage and bring SmartAmp up to current GuitarML standards.
 
 ![app](https://github.com/keyth72/SmartGuitarAmp/blob/master/resources/amp_pic.png)
 
-You can create your own models and load them in SmartGuitarAmp with minor code modifications.
-To train your own models, use [PedalNetRT](https://github.com/GuitarML/PedalNetRT)
+## Info
+Re-creation of the LSTM inference model from [Real-Time Guitar Amplifier Emulation with Deep
+Learning](https://www.mdpi.com/2076-3417/10/3/766/htm)
 
-Model training is done using PyTorch on pre recorded .wav samples. More info in the above repository.
-To share your best models, email the json files to smartguitarml@gmail.com and they may be included 
-in the latest release as a downloadable zip.
+The [Automated-GuitarAmpModelling](https://github.com/Alec-Wright/Automated-GuitarAmpModelling) project was used to train the .json models.<br>
+GuitarML maintains a [fork](https://github.com/GuitarML/Automated-GuitarAmpModelling) with a few extra helpful features, including a Colab training script.
 
-Also see compainion plugin, the [SmartGuitarPedal](https://github.com/GuitarML/SmartGuitarPedal)
+The plugin uses [RTNeural](https://github.com/jatinchowdhury18/RTNeural), which is a highly optimized neural net inference engine intended for audio applications. 
 
 ## Installing the plugin
 
-1. Download plugin (Windows 10, Mac, Ubuntu Linux) [here](https://github.com/keyth72/SmartGuitarAmp/releases)
-2. Copy to your DAW's VST directory (for Mac, use .dmg installer or copy AU/VST3 to desired folder)
+1. Download the appropriate plugin installer (Windows, Mac, Linux)
+2. Run the installer and follow the instructions.
 
-## Build Instructions
+### Build with Cmake
+
+```bash
+# Clone the repository
+$ git clone https://github.com/GuitarML/SmartGuitarAmp.git
+$ cd SmartGuitarAmp
+
+# initialize and set up submodules
+$ git submodule update --init --recursive
+
+# build with CMake
+$ cmake -Bbuild
+$ cmake --build build --config Release
+```
+The binaries will be located in `SmartGuitarAmp/build/SmartAmp_artefacts/`
+
+### Build with Projucer 
 
 1. Clone or download this repository.
 2. Download and install [JUCE](https://juce.com/) This project uses the "Projucer" application from the JUCE website. 
-3. Download [Eigen](http://eigen.tuxfamily.org)
-   Extract Eigen to a convenient location on your system (will be linked with Projucer)
-4. Open SmartGuitarPedal.jucer file with Projucer
-5. Add the <full_path_to>/ Eigen folder to "Header Search Paths" in Exporters -> Debug/Release
-6. Open and build project in Visual Studio (Windows), Xcode (Mac), or Code::Blocks/Makefile (Linux)
+3. Initialize and set up submodules
+```git submodule update --init --recursive```
+4. Open the Chameleon.jucer file and in the appropriate Exporter Header Search Path field, enter the appropriate include paths from the modules folder.
+ 
+5. Build SmartAmp from the Juce Projucer application. 
 
 Note: Make sure to build in Release mode unless actually debugging. Debug mode will not keep up with real time playing.
-
-## Using your own custom trained models (or models from the TonePack)
-
-Use the "Load Tone" button in the plugin to load tone models trained with PedalNetRT.  The current channel's 
-EQ/gain will be applied to the custom tone.  Switching the clean/lead channel unloads the custom tone and 
-reloads the channel's default tone.
-
-## License
-This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
-
-This project builds off the work done in [WaveNetVA](https://github.com/damskaggep/WaveNetVA)
-
-The EQ code used in this plugin is based on the work done by Michael Gruhn in 4BandEQ algorithm.

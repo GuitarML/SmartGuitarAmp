@@ -17,8 +17,9 @@ class Eq4Band
 {
 public:
     Eq4Band();
-    void process (AudioBuffer<float>& buffer, MidiBuffer& midiMessages, const int numSamples, const int numInputChannels);
+    void process (const float* inData, float* outData, MidiBuffer& midiMessages, const int numSamples, const int numInputChannels, const int sampleRate);
     void setParameters(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
+    void resetSampleRate();
 
 private:
     // Tone Knob related variables
@@ -30,7 +31,7 @@ private:
     int treble_frequency = 5000;
     //int presence_frequency = 5500;
 
-    int srate = 44100; //TODO set from input
+    int srate = 44100;  // Set default
 
     float pi = 3.1415926;
 

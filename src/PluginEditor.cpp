@@ -29,14 +29,10 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     addAndMakeVisible(ampOnButton);
     ampOnButton.addListener(this);
 
-    addAndMakeVisible(loadButton);
-    loadButton.setButtonText("Load Tone");
-    loadButton.addListener(this);
-
-    addAndMakeVisible(modelLabel);
-    modelLabel.setText(processor.loaded_tone_name, juce::NotificationType::dontSendNotification);
-    modelLabel.setJustificationType(juce::Justification::left);
-    modelLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    addAndMakeVisible(versionLabel);
+    versionLabel.setText("v2.0", juce::NotificationType::dontSendNotification);
+    versionLabel.setJustificationType(juce::Justification::left);
+    versionLabel.setColour(juce::Label::textColourId, juce::Colours::black);
 
     ampCleanLeadButton.setImages(true, true, true,
         ImageCache::getFromMemory(BinaryData::power_switch_up_png, BinaryData::power_switch_up_pngSize), 1.0, Colours::transparentWhite,
@@ -53,10 +49,10 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
         0.0);
     addAndMakeVisible(ampLED);
 
+    presenceSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, PRESENCE_ID, ampPresenceKnob);    	
     addAndMakeVisible(ampPresenceKnob);
     ampPresenceKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampPresenceKnob.addListener(this);
-    //ampPresenceKnob.setSkewFactorFromMidPoint(1000.0); // Not working because of custom lookAndFeel class
     ampPresenceKnob.setRange(-10.0, 10.0);
     ampPresenceKnob.setValue(processor.ampPresenceKnobState);
     ampPresenceKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
@@ -64,6 +60,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampPresenceKnob.setNumDecimalPlacesToDisplay(1);
     ampPresenceKnob.setDoubleClickReturnValue(true, 0.0);
 
+    cleanBassSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, CLEAN_BASS_ID, ampCleanBassKnob);   
     addAndMakeVisible(ampCleanBassKnob);
     ampCleanBassKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanBassKnob.addListener(this);
@@ -74,6 +71,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampCleanBassKnob.setNumDecimalPlacesToDisplay(1);
     ampCleanBassKnob.setDoubleClickReturnValue(true, 0.0);
 
+    cleanMidSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, CLEAN_MID_ID, ampCleanMidKnob);   
     addAndMakeVisible(ampCleanMidKnob);
     ampCleanMidKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanMidKnob.addListener(this);
@@ -84,6 +82,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampCleanMidKnob.setNumDecimalPlacesToDisplay(1);
     ampCleanMidKnob.setDoubleClickReturnValue(true, 0.0);
 
+    cleanTrebleSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, CLEAN_TREBLE_ID, ampCleanTrebleKnob);   
     addAndMakeVisible(ampCleanTrebleKnob);
     ampCleanTrebleKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanTrebleKnob.addListener(this);
@@ -94,6 +93,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampCleanTrebleKnob.setNumDecimalPlacesToDisplay(1);
     ampCleanTrebleKnob.setDoubleClickReturnValue(true, 0.0);
 
+    cleanGainSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, CLEAN_GAIN_ID, ampCleanGainKnob);   
     addAndMakeVisible(ampCleanGainKnob);
     ampCleanGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanGainKnob.addListener(this);
@@ -104,6 +104,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampCleanGainKnob.setNumDecimalPlacesToDisplay(1);
     ampCleanGainKnob.setDoubleClickReturnValue(true, 10.0);
 
+    leadBassSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, LEAD_BASS_ID, ampLeadBassKnob);   
     addAndMakeVisible(ampLeadBassKnob);
     ampLeadBassKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadBassKnob.addListener(this);
@@ -114,6 +115,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampLeadBassKnob.setNumDecimalPlacesToDisplay(1);
     ampLeadBassKnob.setDoubleClickReturnValue(true, 0.0);
 
+    leadMidSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, LEAD_MID_ID, ampLeadMidKnob);   
     addAndMakeVisible(ampLeadMidKnob);
     ampLeadMidKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadMidKnob.addListener(this);
@@ -124,6 +126,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampLeadMidKnob.setNumDecimalPlacesToDisplay(1);
     ampLeadMidKnob.setDoubleClickReturnValue(true, 0.0);
 
+    leadTrebleSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, LEAD_TREBLE_ID, ampLeadTrebleKnob);   
     addAndMakeVisible(ampLeadTrebleKnob);
     ampLeadTrebleKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadTrebleKnob.addListener(this);
@@ -134,6 +137,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampLeadTrebleKnob.setNumDecimalPlacesToDisplay(1);
     ampLeadTrebleKnob.setDoubleClickReturnValue(true, 0.0);
 
+    leadGainSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, LEAD_GAIN_ID, ampLeadGainKnob);   
     addAndMakeVisible(ampLeadGainKnob);
     ampLeadGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadGainKnob.addListener(this);
@@ -144,6 +148,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampLeadGainKnob.setNumDecimalPlacesToDisplay(1);
     ampLeadGainKnob.setDoubleClickReturnValue(true, 10.0);
 
+    masterSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, MASTER_ID, ampMasterKnob);   
     addAndMakeVisible(ampMasterKnob);
     ampMasterKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampMasterKnob.addListener(this);
@@ -157,12 +162,6 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     // Size of plugin GUI
     setSize (1085, 660);
 
-    // Load the preset wavenet json model from the project resources
-    if (processor.custom_tone == 0) {
-        processor.loadConfigAmp();
-    } else {
-        processor.loadConfig(processor.loaded_tone);
-    }
 }
 
 SmartAmpAudioProcessorEditor::~SmartAmpAudioProcessorEditor()
@@ -172,28 +171,23 @@ SmartAmpAudioProcessorEditor::~SmartAmpAudioProcessorEditor()
 //==============================================================================
 void SmartAmpAudioProcessorEditor::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    //g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
-    if ( current_background == 1 && processor.amp_state == 1 && processor.amp_lead == 1 ) {
+
+    juce::Rectangle<int> ClipRect = g.getClipBounds();
+
+    if ( current_background == 1 && processor.amp_state == 1 && processor.amp_lead == 0 ) {
         // Redraw only the clipped part of the background image
-        juce::Rectangle<int> ClipRect = g.getClipBounds();
         g.drawImage(background_clean, ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight(), ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight());
 
-    } else if (current_background == 1 && processor.amp_state == 1 && processor.amp_lead == 0) {
+    } else if (current_background == 1 && processor.amp_state == 1 && processor.amp_lead == 1) {
         // Redraw only the clipped part of the background image
-        juce::Rectangle<int> ClipRect = g.getClipBounds();
         g.drawImage(background_lead, ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight(), ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight());
 
     } else {
         // Redraw only the clipped part of the background image
-        juce::Rectangle<int> ClipRect = g.getClipBounds();
         g.drawImage(background_off, ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight(), ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight());
 
     }
-    //g.drawImageAt(background, 0, 0);
 
-    //g.setColour (Colours::white);
-    //g.setFont (15.0f);
 
     // Should really override the ToggleButton class, but being lazy here
     // Set On/Off amp graphic
@@ -222,7 +216,7 @@ void SmartAmpAudioProcessorEditor::paint (Graphics& g)
             0.0);
     }
     // Set clean/lead switch graphic
-    if (processor.amp_lead == 0) {
+    if (processor.amp_lead == 1) {
         ampCleanLeadButton.setImages(true, true, true,
             ImageCache::getFromMemory(BinaryData::power_switch_down_png, BinaryData::power_switch_down_pngSize), 1.0, Colours::transparentWhite,
             Image(), 1.0, Colours::transparentWhite,
@@ -243,8 +237,7 @@ void SmartAmpAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 
-    loadButton.setBounds(50, 40, 125, 25);
-    modelLabel.setBounds(50, 65, 400, 25);
+    versionLabel.setBounds(50, 65, 400, 25);
     // Amp Widgets
     ampPresenceKnob.setBounds(97, 495, 75, 105);
     ampCleanBassKnob.setBounds(197, 495, 75, 105);
@@ -263,22 +256,6 @@ void SmartAmpAudioProcessorEditor::resized()
     ampLED.setBounds(975, 160, 15, 25);
 }
 
-void SmartAmpAudioProcessorEditor::loadButtonClicked()
-{
-    FileChooser chooser("Select a .json tone...",
-        {},
-        "*.json");
-    if (chooser.browseForFileToOpen())
-    {
-        File file = chooser.getResult();
-        processor.loadConfig(file);
-        fname = file.getFileName();
-        modelLabel.setText(fname, juce::NotificationType::dontSendNotification);
-        processor.loaded_tone = file;
-        processor.loaded_tone_name = fname;
-        processor.custom_tone = 1;
-    }
-}
 
 void SmartAmpAudioProcessorEditor::buttonClicked(juce::Button* button)
 {
@@ -286,8 +263,6 @@ void SmartAmpAudioProcessorEditor::buttonClicked(juce::Button* button)
         ampOnButtonClicked();
     } else if (button == &ampCleanLeadButton) {
         ampCleanLeadButtonClicked();
-    } else if (button == &loadButton) {
-        loadButtonClicked();
     }
 }
 
@@ -304,19 +279,14 @@ void SmartAmpAudioProcessorEditor::ampOnButtonClicked() {
 }
 
 void SmartAmpAudioProcessorEditor::ampCleanLeadButtonClicked() {
-    if (processor.amp_lead == 0) {
-        processor.amp_lead = 1;
-        processor.loadConfigAmp();
+    if (processor.amp_lead == 1) {
+        processor.amp_lead = 0;
         processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
-    else if (processor.amp_lead == 1) {
-        processor.amp_lead = 0;
-        processor.loadConfigAmp();
+    else {
+        processor.amp_lead = 1;
         processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
-    modelLabel.setText("", juce::NotificationType::dontSendNotification);
-    processor.loaded_tone_name = "";
-    processor.custom_tone = 0;
 
     resetImages();
     repaint();
@@ -332,7 +302,7 @@ void SmartAmpAudioProcessorEditor::sliderValueChanged(Slider* slider)
     else if (slider == &ampMasterKnob)
         processor.set_ampMaster(slider->getValue());
     else if (slider == &ampCleanBassKnob || slider == &ampCleanMidKnob || slider == &ampCleanTrebleKnob) {
-        if (processor.amp_lead == 1)
+        if (processor.amp_lead == 0)
             processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());
         // Set knob states for saving positions when closing/reopening GUI
         processor.ampCleanBassKnobState = ampCleanBassKnob.getValue();
@@ -340,7 +310,7 @@ void SmartAmpAudioProcessorEditor::sliderValueChanged(Slider* slider)
         processor.ampCleanTrebleKnobState = ampCleanTrebleKnob.getValue();
     }
     else if (slider == &ampLeadBassKnob || slider == &ampLeadMidKnob || slider == &ampLeadTrebleKnob) {
-        if (processor.amp_lead == 0)
+        if (processor.amp_lead == 1)
             processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
         // Set knob states for saving positions when closing/reopening GUI
         processor.ampLeadBassKnobState = ampLeadBassKnob.getValue();
@@ -348,9 +318,9 @@ void SmartAmpAudioProcessorEditor::sliderValueChanged(Slider* slider)
         processor.ampLeadTrebleKnobState = ampLeadTrebleKnob.getValue();
     }
     else if (slider == &ampPresenceKnob) {
-        if (processor.amp_lead == 1)
+        if (processor.amp_lead == 0)
             processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());
-        else if (processor.amp_lead == 0)
+        else if (processor.amp_lead == 1)
             processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
 
@@ -384,7 +354,7 @@ void SmartAmpAudioProcessorEditor::resetImages()
             0.0);
     }
     // Set clean/lead switch graphic
-    if (processor.amp_lead == 0) {
+    if (processor.amp_lead == 1) {
         ampCleanLeadButton.setImages(true, true, true,
             ImageCache::getFromMemory(BinaryData::power_switch_down_png, BinaryData::power_switch_down_pngSize), 1.0, Colours::transparentWhite,
             Image(), 1.0, Colours::transparentWhite,

@@ -115,10 +115,17 @@ void SmartAmpAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     constexpr double targetSampleRate = 44100.0;
     resampler.prepareWithTargetSampleRate({ sampleRate, (uint32)samplesPerBlock, 1 }, targetSampleRate);
 
-    MemoryInputStream jsonInputStream(BinaryData::BluesJr_json, BinaryData::BluesJr_jsonSize, false);
-    nlohmann::json weights_json = nlohmann::json::parse(jsonInputStream.readEntireStreamAsString().toStdString());
+    if (amp_lead == 0 ) {
+        MemoryInputStream jsonInputStream(BinaryData::BluesJr_json, BinaryData::BluesJr_jsonSize, false);
+        nlohmann::json weights_json = nlohmann::json::parse(jsonInputStream.readEntireStreamAsString().toStdString());
+        LSTM.load_json3(weights_json);
+    } else {
+        MemoryInputStream jsonInputStream(BinaryData::HT40_Overdrive_json, BinaryData::HT40_Overdrive_jsonSize, false);
+        nlohmann::json weights_json = nlohmann::json::parse(jsonInputStream.readEntireStreamAsString().toStdString());
+        LSTM.load_json3(weights_json);
+    }
 
-    LSTM.load_json3(weights_json);
+   
 
     // set up DC blocker
     dcBlocker.coefficients = dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 35.0f);
@@ -179,7 +186,7 @@ void SmartAmpAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
             buffer.applyGain(ampDrive);
         }
         else {
-            buffer.applyGainRamp(0, (int)block44k.getNumSamples(), previousAmpDrive, ampDrive);
+            buffer.applyGainRamp(0, numSamples, previousAmpDrive, ampDrive);
             previousAmpDrive = ampDrive;
         }
 
@@ -188,7 +195,8 @@ void SmartAmpAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         auto block44k = resampler.processIn(block);
 
         // Apply LSTM model
-        LSTM.process(block44k.getChannelPointer(0), block44k.getChannelPointer(0), (int)block44k.getNumSamples());
+        //LSTM.process(block44k.getChannelPointer(0), block44k.getChannelPointer(0), (int)block44k.getNumSamples());
+        LSTM.process(block44k.getChannelPointer(0), gainValue, block44k.getChannelPointer(0), (int) block44k.getNumSamples());
 
         // resample back to original sample rate
         resampler.processOut(block44k, block);
@@ -205,9 +213,9 @@ void SmartAmpAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         }
 
         // Custom Level for quieter models
-        if (current_model_index == 2) {
-            buffer.applyGain(2.0);
-        }
+        //if (current_model_index == 2) {
+        //    buffer.applyGain(2.0);
+        //}
     }
 
     // process DC blocker
@@ -230,7 +238,7 @@ AudioProcessorEditor* SmartAmpAudioProcessor::createEditor()
     return new SmartAmpAudioProcessorEditor (*this);
 }
 
-void ChameleonAudioProcessor::getStateInformation(MemoryBlock& destData)
+void SmartAmpAudioProcessor::getStateInformation(MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
@@ -238,11 +246,12 @@ void ChameleonAudioProcessor::getStateInformation(MemoryBlock& destData)
 
     auto state = treeState.copyState();
     std::unique_ptr<XmlElement> xml(state.createXml());
-    xml->setAttribute("current_tone", current_model_index);
+    xml->setAttribute("amp_lead", amp_lead);
+    xml->setAttribute("amp_state", amp_state);
     copyXmlToBinary(*xml, destData);
 }
 
-void ChameleonAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
+void SmartAmpAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -254,25 +263,30 @@ void ChameleonAudioProcessor::setStateInformation(const void* data, int sizeInBy
         if (xmlState->hasTagName(treeState.state.getType()))
         {
             treeState.replaceState(juce::ValueTree::fromXml(*xmlState));
-            current_model_index = xmlState->getIntAttribute("current_tone");
-
+            amp_lead = xmlState->getIntAttribute("amp_lead");
+            amp_state = xmlState->getIntAttribute("amp_state");
+            
+            /*
             switch (current_model_index)
             {
             case 0:
-                loadConfig(red_tone);
+                //loadConfig(clean_tone);
+                amp_lead = 0;
                 break;
             case 1:
-                loadConfig(gold_tone);
+                //loadConfig(lead_tone);
+                amp_lead = 1;
                 break;
             }
-
-            if (auto* editor = dynamic_cast<ChameleonAudioProcessorEditor*> (getActiveEditor()))
-                editor->resetImages();
+            */
+            //TODO fix
+            //if (auto* editor = dynamic_cast<SmartAmpAudioProcessorEditor*> (getActiveEditor()))
+            //    editor->resetImages();
         }
     }
 }
 
-
+/*
 float SmartAmpAudioProcessor::convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max)
 {
     float b = log(y_max / y_min) / (x_max - x_min);
@@ -280,24 +294,29 @@ float SmartAmpAudioProcessor::convertLogScale(float in_value, float x_min, float
     float converted_value = a * exp(b * in_value);
     return converted_value;
 }
-
+*/
 void SmartAmpAudioProcessor::set_ampCleanDrive(float db_ampCleanDrive)
 {
-    ampCleanDrive = decibelToLinear(db_ampCleanDrive);
+    //ampCleanDrive = decibelToLinear(db_ampCleanDrive);
     ampCleanGainKnobState = db_ampCleanDrive;
+    gainValue = db_ampCleanDrive;
 }
 
 void SmartAmpAudioProcessor::set_ampLeadDrive(float db_ampLeadDrive)
 {
-    ampLeadDrive = decibelToLinear(db_ampLeadDrive);
+    //ampLeadDrive = decibelToLinear(db_ampLeadDrive);
     ampLeadGainKnobState = db_ampLeadDrive;
+    gainValue = db_ampLeadDrive;
 }
+
 
 void SmartAmpAudioProcessor::set_ampMaster(float db_ampMaster)
 {
-    ampMaster = decibelToLinear(db_ampMaster);
+    //ampMaster = decibelToLinear(db_ampMaster);
     ampMasterKnobState = db_ampMaster;
 }
+
+
 
 void SmartAmpAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider)
 {

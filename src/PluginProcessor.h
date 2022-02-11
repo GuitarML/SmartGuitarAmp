@@ -94,10 +94,16 @@ public:
 
     // Pedal/amp states
     int amp_state = 1; // 0 = off, 1 = on
-    int amp_lead = 1; // 1 = clean, 0 = lead
-    int custom_tone = 0; // 0 = custom tone loaded, 1 = default channel tone
-    File loaded_tone;
-    juce::String loaded_tone_name;
+    int amp_lead = 0; // 0 = clean, 1 = lead
+    //int custom_tone = 0; // 0 = custom tone loaded, 1 = default channel tone
+    //File loaded_tone;
+    //juce::String loaded_tone_name;
+
+    float ampDrive = 1.0;
+    float previousAmpDrive = 1.0;
+    float gainValue = 1.0;
+    float ampMaster = 1.0;
+    float previousAmpMaster = 1.0;
 
     // Amp knob states
     float ampPresenceKnobState = 0.0;
@@ -124,13 +130,13 @@ private:
     // Amp
     float ampCleanDrive = 1.0;
     float ampLeadDrive = 1.0;
-    float ampMaster = 1.0;
+    //float ampMaster = 1.0;
 
     var dummyVar;
 
     chowdsp::ResampledProcess<chowdsp::ResamplingTypes::SRCResampler<>> resampler;
 
-    dsp::IIR::Filter<float> dcBlocker;  // Unused for SmartAmp plugin, leaving commented as template for future plugins
+    dsp::IIR::Filter<float> dcBlocker;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SmartAmpAudioProcessor)

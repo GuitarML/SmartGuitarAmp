@@ -53,7 +53,7 @@ void RT_LSTM::reset()
     model_cond2.reset();
 }
 
-void RT_LSTM::process(const float* inData, float param1, float param2, float* outData, int numSamples)
+void RT_LSTM::process(const float* inData, float param1, float* outData, int numSamples)
 {
     // Check for parameter changes for smoothing calculations
     if (param1 != previousParam1) {
