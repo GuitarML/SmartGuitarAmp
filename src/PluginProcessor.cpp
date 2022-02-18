@@ -22,11 +22,11 @@ SmartAmpAudioProcessor::SmartAmpAudioProcessor()
         .withOutput("Output", AudioChannelSet::stereo(), true)
 #endif
     ),
-    treeState(*this, nullptr, "PARAMETER", { std::make_unique<AudioParameterFloat>(CLEAN_GAIN_ID, CLEAN_GAIN_NAME, NormalisableRange<float>(-10.0f, 10.0f, 0.01f), 0.0f),
+    treeState(*this, nullptr, "PARAMETER", { std::make_unique<AudioParameterFloat>(CLEAN_GAIN_ID, CLEAN_GAIN_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f),
                     std::make_unique<AudioParameterFloat>(CLEAN_BASS_ID, CLEAN_BASS_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
                     std::make_unique<AudioParameterFloat>(CLEAN_MID_ID, CLEAN_MID_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
                     std::make_unique<AudioParameterFloat>(CLEAN_TREBLE_ID, CLEAN_TREBLE_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
-                    std::make_unique<AudioParameterFloat>(LEAD_GAIN_ID, LEAD_GAIN_NAME, NormalisableRange<float>(-10.0f, 10.0f, 0.01f), 0.0f),
+                    std::make_unique<AudioParameterFloat>(LEAD_GAIN_ID, LEAD_GAIN_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.0f),
                     std::make_unique<AudioParameterFloat>(LEAD_BASS_ID, LEAD_BASS_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
                     std::make_unique<AudioParameterFloat>(LEAD_MID_ID, LEAD_MID_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
                     std::make_unique<AudioParameterFloat>(LEAD_TREBLE_ID, LEAD_TREBLE_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
@@ -125,13 +125,10 @@ void SmartAmpAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
         LSTM.load_json3(weights_json);
     }
 
-   
-
     // set up DC blocker
     dcBlocker.coefficients = dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 35.0f);
     dsp::ProcessSpec spec{ sampleRate, static_cast<uint32> (samplesPerBlock), 2 };
     dcBlocker.prepare(spec);
-
 }
 
 void SmartAmpAudioProcessor::releaseResources()
@@ -179,16 +176,13 @@ void SmartAmpAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
         //    EQ (Presence, Bass, Mid, Treble)
         eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
+        
+        if (amp_lead == 0) {
+            ampDrive = ampCleanGainKnobState;
+        } else {
+            ampDrive = ampLeadGainKnobState;
+        }
 
-        // Apply ramped changes for gain smoothing
-        if (ampDrive == previousAmpDrive)
-        {
-            buffer.applyGain(ampDrive);
-        }
-        else {
-            buffer.applyGainRamp(0, numSamples, previousAmpDrive, ampDrive);
-            previousAmpDrive = ampDrive;
-        }
 
         // resample to target sample rate
         auto block = dsp::AudioBlock<float>(buffer.getArrayOfWritePointers(), 1, numSamples);
@@ -196,20 +190,20 @@ void SmartAmpAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffe
 
         // Apply LSTM model
         //LSTM.process(block44k.getChannelPointer(0), block44k.getChannelPointer(0), (int)block44k.getNumSamples());
-        LSTM.process(block44k.getChannelPointer(0), gainValue, block44k.getChannelPointer(0), (int) block44k.getNumSamples());
+        LSTM.process(block44k.getChannelPointer(0), ampDrive, block44k.getChannelPointer(0), (int) block44k.getNumSamples());
 
         // resample back to original sample rate
         resampler.processOut(block44k, block);
 
         // Master Volume 
         // Apply ramped changes for gain smoothing
-        if (ampMaster == previousAmpMaster)
+        if (ampMasterKnobState == previousAmpMaster)
         {
-            buffer.applyGain(ampMaster);
+            buffer.applyGain(ampMasterKnobState);
         }
         else {
-            buffer.applyGainRamp(0, (int)block44k.getNumSamples(), previousAmpMaster, ampMaster);
-            previousAmpMaster = ampMaster;
+            buffer.applyGainRamp(0, (int)buffer.getNumSamples(), previousAmpMaster, ampMasterKnobState);
+            previousAmpMaster = ampMasterKnobState;
         }
 
         // Custom Level for quieter models
@@ -294,7 +288,7 @@ float SmartAmpAudioProcessor::convertLogScale(float in_value, float x_min, float
     float converted_value = a * exp(b * in_value);
     return converted_value;
 }
-*/
+
 void SmartAmpAudioProcessor::set_ampCleanDrive(float db_ampCleanDrive)
 {
     //ampCleanDrive = decibelToLinear(db_ampCleanDrive);
@@ -315,7 +309,7 @@ void SmartAmpAudioProcessor::set_ampMaster(float db_ampMaster)
     //ampMaster = decibelToLinear(db_ampMaster);
     ampMasterKnobState = db_ampMaster;
 }
-
+*/
 
 
 void SmartAmpAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider)

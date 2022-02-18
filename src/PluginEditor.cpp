@@ -97,7 +97,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     addAndMakeVisible(ampCleanGainKnob);
     ampCleanGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampCleanGainKnob.addListener(this);
-    ampCleanGainKnob.setRange(0.0, 20.0);
+    ampCleanGainKnob.setRange(0.0, 1.0);
     ampCleanGainKnob.setValue(processor.ampCleanGainKnobState);
     ampCleanGainKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampCleanGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
@@ -141,7 +141,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     addAndMakeVisible(ampLeadGainKnob);
     ampLeadGainKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampLeadGainKnob.addListener(this);
-    ampLeadGainKnob.setRange(0.0, 20.0);
+    ampLeadGainKnob.setRange(0.0, 1.0);
     ampLeadGainKnob.setValue(processor.ampLeadGainKnobState);
     ampLeadGainKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     ampLeadGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20);
@@ -160,7 +160,7 @@ SmartAmpAudioProcessorEditor::SmartAmpAudioProcessorEditor (SmartAmpAudioProcess
     ampMasterKnob.setDoubleClickReturnValue(true, -12.0);
 
     // Size of plugin GUI
-    setSize (1085, 660);
+    setSize (1085, 540);
 
 }
 
@@ -237,23 +237,24 @@ void SmartAmpAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 
-    versionLabel.setBounds(50, 65, 400, 25);
+    versionLabel.setBounds(50, 65, 925, 510);
     // Amp Widgets
-    ampPresenceKnob.setBounds(97, 495, 75, 105);
-    ampCleanBassKnob.setBounds(197, 495, 75, 105);
-    ampCleanMidKnob.setBounds(280, 495, 75, 105);
-    ampCleanTrebleKnob.setBounds(378, 495, 75, 105);
-    ampCleanGainKnob.setBounds(456, 495, 75, 105);
-    ampLeadBassKnob.setBounds(553, 495, 75, 105);
-    ampLeadMidKnob.setBounds(636, 495, 75, 105);
-    ampLeadTrebleKnob.setBounds(726, 495, 75, 105);
-    ampLeadGainKnob.setBounds(806, 495, 75, 105);
-    ampMasterKnob.setBounds(903, 495, 75, 105);
+    //ampPresenceKnob.setBounds(97, 375, 75, 105);
+    ampPresenceKnob.setBounds(97, 375, 75, 105);
+    ampCleanBassKnob.setBounds(197, 375, 75, 105);
+    ampCleanMidKnob.setBounds(280, 375, 75, 105);
+    ampCleanTrebleKnob.setBounds(378, 375, 75, 105);
+    ampCleanGainKnob.setBounds(456, 375, 75, 105);
+    ampLeadBassKnob.setBounds(553, 375, 75, 105);
+    ampLeadMidKnob.setBounds(636, 375, 75, 105);
+    ampLeadTrebleKnob.setBounds(726, 375, 75, 105);
+    ampLeadGainKnob.setBounds(806, 375, 75, 105);
+    ampMasterKnob.setBounds(903, 375, 75, 105);
 
-    ampOnButton.setBounds(9, 495, 35, 45);
-    ampCleanLeadButton.setBounds(959, 495, 15, 25);
+    ampOnButton.setBounds(9, 375, 35, 45);
+    ampCleanLeadButton.setBounds(959, 375, 15, 25);
 
-    ampLED.setBounds(975, 160, 15, 25);
+    ampLED.setBounds(975, 40, 15, 25);
 }
 
 
@@ -296,11 +297,14 @@ void SmartAmpAudioProcessorEditor::sliderValueChanged(Slider* slider)
 {
     // Amp
     if (slider == &ampCleanGainKnob)
-        processor.set_ampCleanDrive(slider->getValue());
+        //processor.set_ampCleanDrive(slider->getValue());
+        processor.ampCleanGainKnobState = slider->getValue();
     else if (slider == &ampLeadGainKnob)
-        processor.set_ampLeadDrive(slider->getValue());
+        //processor.set_ampLeadDrive(slider->getValue());
+        processor.ampLeadGainKnobState = slider->getValue();
     else if (slider == &ampMasterKnob)
-        processor.set_ampMaster(slider->getValue());
+        //processor.set_ampMaster(slider->getValue());
+        processor.ampMasterKnobState = slider->getValue();
     else if (slider == &ampCleanBassKnob || slider == &ampCleanMidKnob || slider == &ampCleanTrebleKnob) {
         if (processor.amp_lead == 0)
             processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());

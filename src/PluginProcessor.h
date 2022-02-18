@@ -85,9 +85,9 @@ public:
     float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
 
     // Amp
-    void set_ampCleanDrive(float db_ampCleanDrive);
-    void set_ampLeadDrive(float db_ampLeadDrive);
-    void set_ampMaster(float db_ampMaster);
+    //void set_ampCleanDrive(float db_ampCleanDrive);
+    //void set_ampLeadDrive(float db_ampLeadDrive);
+    //void set_ampMaster(float db_ampMaster);
     void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
 
     float decibelToLinear(float dbValue);
@@ -99,10 +99,10 @@ public:
     //File loaded_tone;
     //juce::String loaded_tone_name;
 
-    float ampDrive = 1.0;
-    float previousAmpDrive = 1.0;
-    float gainValue = 1.0;
-    float ampMaster = 1.0;
+    float ampDrive = 0.5;
+    //float previousAmpDrive = 0.5;
+    //float gainValue = 1.0;
+    //float ampMaster = 1.0;
     float previousAmpMaster = 1.0;
 
     // Amp knob states
@@ -110,12 +110,12 @@ public:
     float ampCleanBassKnobState = 0.0;
     float ampCleanMidKnobState = 0.0;
     float ampCleanTrebleKnobState = 0.0;
-    float ampCleanGainKnobState = 10.0;
+    float ampCleanGainKnobState = 0.5;
     float ampLeadBassKnobState = 0.0;
     float ampLeadMidKnobState = 0.0;
     float ampLeadTrebleKnobState = 0.0;
-    float ampLeadGainKnobState = 10.0;
-    float ampMasterKnobState = -12.0;
+    float ampLeadGainKnobState = 0.5;
+    float ampMasterKnobState = 1.0;
 
     bool lstm_state = true;
 
@@ -128,8 +128,8 @@ private:
     Eq4Band eq4band; // Amp EQ
 
     // Amp
-    float ampCleanDrive = 1.0;
-    float ampLeadDrive = 1.0;
+    //float ampCleanDrive = 1.0;
+    //float ampLeadDrive = 1.0;
     //float ampMaster = 1.0;
 
     var dummyVar;
