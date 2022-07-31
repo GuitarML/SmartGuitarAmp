@@ -20,7 +20,7 @@ Model training is done using PyTorch on pre recorded .wav samples. More info in 
 To share your best models, email the json files to smartguitarml@gmail.com and they may be included 
 in the latest release as a downloadable zip.
 
-Also see compainion plugin, the [SmartGuitarPedal](https://github.com/GuitarML/SmartGuitarPedal)
+Also see companion plugin, the [SmartGuitarPedal](https://github.com/GuitarML/SmartGuitarPedal)
 
 ## Installing the plugin
 
