@@ -1,0 +1,12 @@
+[submodule "modules/JUCE"]
+	path = modules/JUCE
+	url = https://github.com/juce-framework/JUCE.git
+[submodule "modules/chowdsp_utils"]
+	path = modules/chowdsp_utils
+	url = https://github.com/Chowdhury-DSP/chowdsp_utils
+[submodule "modules/libsamplerate"]
+	path = modules/libsamplerate
+	url = https://github.com/libsndfile/libsamplerate
+[submodule "modules/eigen"]
+	path = modules/eigen
+	url = https://gitlab.com/libeigen/eigen.git

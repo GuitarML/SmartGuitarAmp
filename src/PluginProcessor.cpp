@@ -22,10 +22,32 @@ WaveNetVaAudioProcessor::WaveNetVaAudioProcessor()
         .withOutput("Output", AudioChannelSet::stereo(), true)
 #endif
     ),
-    waveNet(1, 1, 1, 1, "linear", { 1 })
-    
+    waveNet(1, 1, 1, 1, "linear", { 1 }),
+    treeState(*this, nullptr, "PARAMETER", { std::make_unique<AudioParameterFloat>(CLEAN_GAIN_ID, CLEAN_GAIN_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f),
+                        std::make_unique<AudioParameterFloat>(CLEAN_BASS_ID, CLEAN_BASS_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                        std::make_unique<AudioParameterFloat>(CLEAN_MID_ID, CLEAN_MID_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                        std::make_unique<AudioParameterFloat>(CLEAN_TREBLE_ID, CLEAN_TREBLE_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                        
+                        std::make_unique<AudioParameterFloat>(LEAD_GAIN_ID, LEAD_GAIN_NAME, NormalisableRange<float>(-10.0f, 10.0f, 0.01f), 0.0f),
+                        std::make_unique<AudioParameterFloat>(LEAD_BASS_ID, LEAD_BASS_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                        std::make_unique<AudioParameterFloat>(LEAD_MID_ID, LEAD_MID_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                        std::make_unique<AudioParameterFloat>(LEAD_TREBLE_ID, LEAD_TREBLE_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+   
+                        std::make_unique<AudioParameterFloat>(PRESENCE_ID, PRESENCE_NAME, NormalisableRange<float>(-8.0f, 8.0f, 0.01f), 0.0f),
+                        std::make_unique<AudioParameterFloat>(MASTER_ID, MASTER_NAME, NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f) })
+
 #endif
 {
+    cleanBassParam = treeState.getRawParameterValue (CLEAN_BASS_ID);
+    cleanMidParam = treeState.getRawParameterValue (CLEAN_MID_ID);
+    cleanTrebleParam = treeState.getRawParameterValue (CLEAN_TREBLE_ID);
+    cleanGainParam = treeState.getRawParameterValue (CLEAN_GAIN_ID);
+    leadGainParam = treeState.getRawParameterValue (LEAD_GAIN_ID);
+    leadBassParam = treeState.getRawParameterValue (LEAD_BASS_ID);
+    leadMidParam = treeState.getRawParameterValue (LEAD_MID_ID);
+    leadTrebleParam = treeState.getRawParameterValue (LEAD_TREBLE_ID);
+    presenceParam = treeState.getRawParameterValue (PRESENCE_ID);
+    masterParam = treeState.getRawParameterValue (MASTER_ID);	
 }
 
 WaveNetVaAudioProcessor::~WaveNetVaAudioProcessor()
@@ -143,30 +165,26 @@ void WaveNetVaAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
 
     // Amp =============================================================================
     if (amp_state == 1) {
-        //    EQ TODO before or after wavenet? (Presence; Bass, Mid, Treble for both channels)
-        eq4band.process(buffer, midiMessages, numSamples, numInputChannels);
 
         if (amp_lead == 1) {// if clean channel eq/gain
-            
             buffer.applyGain(ampCleanDrive);
-
         }
         else {// else lead channel eq/gain
-
             buffer.applyGain(ampLeadDrive);
-
         }
 
         //    Wavenet, load json for waveNet2 based on lead/clean switch
         waveNet.process(buffer.getArrayOfReadPointers(), buffer.getArrayOfWritePointers(), buffer.getNumSamples());
 
+        eq4band.process(buffer, midiMessages, numSamples, numInputChannels);
+
         //    Master Volume 
         buffer.applyGain(ampMaster);
 
         //    Apply levelAdjust from model param (for adjusting quiet or loud models)
-        if ( waveNet.levelAdjust != 0.0 ) {
-            buffer.applyGain(waveNet.levelAdjust);
-        }
+        //if ( waveNet.levelAdjust != 0.0 ) {
+        //    buffer.applyGain(waveNet.levelAdjust);
+        //}
 
     }
     
@@ -191,12 +209,31 @@ void WaveNetVaAudioProcessor::getStateInformation (MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    auto state = treeState.copyState();
+    std::unique_ptr<XmlElement> xml (state.createXml());
+    xml->setAttribute ("amp_state", amp_state);
+    xml->setAttribute ("amp_lead", amp_lead);
+    copyXmlToBinary (*xml, destData);
 }
 
 void WaveNetVaAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+
+    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
+    {
+        if (xmlState->hasTagName (treeState.state.getType()))
+        {
+            treeState.replaceState (juce::ValueTree::fromXml (*xmlState));
+            amp_state = xmlState->getBoolAttribute ("amp_state");
+            amp_lead = xmlState->getBoolAttribute ("amp_lead");
+            if (auto* editor = dynamic_cast<WaveNetVaAudioProcessorEditor*> (getActiveEditor()))
+                editor->resetImages();
+        }
+    }
 }
 
 
@@ -234,23 +271,7 @@ void WaveNetVaAudioProcessor::loadConfigAmp()
     this->suspendProcessing(false);
 }
 
-void WaveNetVaAudioProcessor::loadConfig(File configFile)
-{
-    this->suspendProcessing(true);
-    WaveNetLoader loader(dummyVar, configFile);
-    float levelAdjust = loader.levelAdjust;
-    int numChannels = loader.numChannels;
-    int inputChannels = loader.inputChannels;
-    int outputChannels = loader.outputChannels;
-    int filterWidth = loader.filterWidth;
-    std::vector<int> dilations = loader.dilations;
-    std::string activation = loader.activation;
-    waveNet.setParams(inputChannels, outputChannels, numChannels, filterWidth, activation,
-        dilations, levelAdjust);
-    loader.loadVariables(waveNet);
-    this->suspendProcessing(false);
-}
-
+/*
 float WaveNetVaAudioProcessor::convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max)
 {
     float b = log(y_max / y_min) / (x_max - x_min);
@@ -276,7 +297,7 @@ void WaveNetVaAudioProcessor::set_ampMaster(float db_ampMaster)
     ampMaster = decibelToLinear(db_ampMaster);
     ampMasterKnobState = db_ampMaster;
 }
-
+*/
 void WaveNetVaAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider)
 {
     eq4band.setParameters(bass_slider, mid_slider, treble_slider, presence_slider);
@@ -284,10 +305,10 @@ void WaveNetVaAudioProcessor::set_ampEQ(float bass_slider, float mid_slider, flo
     ampPresenceKnobState = presence_slider;
 }
 
-float WaveNetVaAudioProcessor::decibelToLinear(float dbValue)
-{
-    return powf(10.0, dbValue/20.0);
-}
+//float WaveNetVaAudioProcessor::decibelToLinear(float dbValue)
+//{
+//    return powf(10.0, dbValue/20.0);
+//}
 
 //==============================================================================
 // This creates new instances of the plugin..

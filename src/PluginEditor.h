@@ -66,11 +66,23 @@ private:
     Label modelLabel;
     juce::String fname;
     virtual void buttonClicked(Button* button) override;
-    void loadButtonClicked();
+    //void loadButtonClicked();
     virtual void sliderValueChanged(Slider* slider) override;
     void ampOnButtonClicked();
     void ampCleanLeadButtonClicked();
     void resetImages();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveNetVaAudioProcessorEditor)
+public:
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> cleanGainSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> cleanBassSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> cleanMidSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> cleanTrebleSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> leadGainSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> leadBassSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> leadMidSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> leadTrebleSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> presenceSliderAttach;
+    std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> masterSliderAttach;
+ 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveNetVaAudioProcessorEditor)
 };
