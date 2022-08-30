@@ -153,19 +153,19 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     //ampLeadGainKnob.setNumDecimalPlacesToDisplay(1);
     ampLeadGainKnob.setDoubleClickReturnValue(true, 0.5);
 
-    ampMasterSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, MASTER_ID, ampMasterKnob);
+    masterSliderAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>(processor.treeState, MASTER_ID, ampMasterKnob);
     addAndMakeVisible(ampMasterKnob);
     ampMasterKnob.setLookAndFeel(&ampSilverKnobLAF);
     ampMasterKnob.addListener(this);
     //ampMasterKnob.setRange(-24.0, 0.0);
     //ampMasterKnob.setValue(processor.ampMasterKnobState);
     ampMasterKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
-    //ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20 );
-    ampMasterKnob.setNumDecimalPlacesToDisplay(1);
+    ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20 );
+    //ampMasterKnob.setNumDecimalPlacesToDisplay(1);
     ampMasterKnob.setDoubleClickReturnValue(true, 0.5);
 
     // Size of plugin GUI
-    setSize (1085, 660);
+    setSize (1085, 540);
 
     // Load the preset wavenet json model from the project resources
     //if (processor.custom_tone == 0) {
@@ -178,6 +178,16 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
 
 WaveNetVaAudioProcessorEditor::~WaveNetVaAudioProcessorEditor()
 {
+    ampPresenceKnob.setLookAndFeel(nullptr);
+    ampCleanBassKnob.setLookAndFeel(nullptr);
+    ampCleanMidKnob.setLookAndFeel(nullptr);
+    ampCleanTrebleKnob.setLookAndFeel(nullptr);
+    ampCleanGainKnob.setLookAndFeel(nullptr);
+    ampLeadBassKnob.setLookAndFeel(nullptr);
+    ampLeadMidKnob.setLookAndFeel(nullptr);
+    ampLeadTrebleKnob.setLookAndFeel(nullptr);
+    ampLeadGainKnob.setLookAndFeel(nullptr);
+    ampMasterKnob.setLookAndFeel(nullptr);
 }
 
 //==============================================================================
@@ -185,13 +195,13 @@ void WaveNetVaAudioProcessorEditor::paint (Graphics& g)
 {
 
     // Workaround for graphics on Windows builds (clipping code doesn't work correctly on Windows)
-    #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-    g.drawImageAt(background_clean, 0, 0);  // Debug Line: Redraw entire background image
-    #else
-    // Redraw only the clipped part of the background image
-    juce::Rectangle<int> ClipRect = g.getClipBounds(); 
-    g.drawImage(background_clean, ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight(), ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight());
-    #endif
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    g.drawImageAt(background_set, 0, 0);  // Debug Line: Redraw entire background image
+#else
+// Redraw only the clipped part of the background image
+    juce::Rectangle<int> ClipRect = g.getClipBounds();
+    g.drawImage(background_set, ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight(), ClipRect.getX(), ClipRect.getY(), ClipRect.getWidth(), ClipRect.getHeight());
+#endif
 
 }
 
@@ -200,43 +210,25 @@ void WaveNetVaAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 
-    loadButton.setBounds(50, 40, 125, 25);
-    modelLabel.setBounds(50, 65, 400, 25);
     // Amp Widgets
-    ampPresenceKnob.setBounds(97, 495, 75, 105);
-    ampCleanBassKnob.setBounds(197, 495, 75, 105);
-    ampCleanMidKnob.setBounds(280, 495, 75, 105);
-    ampCleanTrebleKnob.setBounds(378, 495, 75, 105);
-    ampCleanGainKnob.setBounds(456, 495, 75, 105);
-    ampLeadBassKnob.setBounds(553, 495, 75, 105);
-    ampLeadMidKnob.setBounds(636, 495, 75, 105);
-    ampLeadTrebleKnob.setBounds(726, 495, 75, 105);
-    ampLeadGainKnob.setBounds(806, 495, 75, 105);
-    ampMasterKnob.setBounds(903, 495, 75, 105);
+    ampPresenceKnob.setBounds(97, 375, 75, 105);
+    ampCleanBassKnob.setBounds(197, 375, 75, 105);
+    ampCleanMidKnob.setBounds(280, 375, 75, 105);
+    ampCleanTrebleKnob.setBounds(378, 375, 75, 105);
+    ampCleanGainKnob.setBounds(456, 375, 75, 105);
+    ampLeadBassKnob.setBounds(553, 375, 75, 105);
+    ampLeadMidKnob.setBounds(636, 375, 75, 105);
+    ampLeadTrebleKnob.setBounds(726, 375, 75, 105);
+    ampLeadGainKnob.setBounds(806, 375, 75, 105);
+    ampMasterKnob.setBounds(903, 375, 75, 105);
 
-    ampOnButton.setBounds(9, 495, 35, 45);
-    ampCleanLeadButton.setBounds(959, 495, 15, 25);
+    ampOnButton.setBounds(9, 375, 35, 45);
+    ampCleanLeadButton.setBounds(959, 375, 15, 25);
 
-    ampLED.setBounds(975, 160, 15, 25);
+    ampLED.setBounds(975, 40, 15, 25);
 }
 
-/*
-void WaveNetVaAudioProcessorEditor::loadButtonClicked()
-{
-    FileChooser chooser("Select a .json tone...",
-        {},
-        "*.json");
-    if (chooser.browseForFileToOpen())
-    {
-        File file = chooser.getResult();
-        processor.loadConfig(file);
-        fname = file.getFileName();
-        modelLabel.setText(fname, juce::NotificationType::dontSendNotification);
-        processor.loaded_tone = file;
-        processor.loaded_tone_name = fname;
-        processor.custom_tone = 1;
-    }
-}
+
 
 void WaveNetVaAudioProcessorEditor::buttonClicked(juce::Button* button)
 {
@@ -244,11 +236,9 @@ void WaveNetVaAudioProcessorEditor::buttonClicked(juce::Button* button)
         ampOnButtonClicked();
     } else if (button == &ampCleanLeadButton) {
         ampCleanLeadButtonClicked();
-    } else if (button == &loadButton) {
-        loadButtonClicked();
     }
 }
-*/
+
 
 void WaveNetVaAudioProcessorEditor::ampOnButtonClicked() {
     if (processor.amp_state == 0) {
@@ -258,44 +248,44 @@ void WaveNetVaAudioProcessorEditor::ampOnButtonClicked() {
         processor.amp_state = 0;
     }
     resetImages();
-    repaint();
 }
 
+
 void WaveNetVaAudioProcessorEditor::ampCleanLeadButtonClicked() {
-    if (processor.amp_lead == 0) {
-        processor.amp_lead = 1;
+    if (processor.amp_lead == 1) {
+        processor.amp_lead = 0;
         processor.loadConfigAmp();
         processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
-    else if (processor.amp_lead == 1) {
-        processor.amp_lead = 0;
+    else  {
+        processor.amp_lead = 1;
         processor.loadConfigAmp();
         processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
-    modelLabel.setText("", juce::NotificationType::dontSendNotification);
-    processor.loaded_tone_name = "";
-    processor.custom_tone = 0;
 
     resetImages();
-    repaint();
 }
 
 void WaveNetVaAudioProcessorEditor::sliderValueChanged(Slider* slider)
 {
     // Amp
-    
-    if (slider == &ampLeadBassKnob || slider == &ampLeadMidKnob || slider == &ampLeadTrebleKnob) {
+
+    if (slider == &ampCleanBassKnob || slider == &ampCleanMidKnob || slider == &ampCleanTrebleKnob) {
         if (processor.amp_lead == 0)
+            processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());
+        // Set knob states for saving positions when closing/reopening GUI
+
+    }
+    else if (slider == &ampLeadBassKnob || slider == &ampLeadMidKnob || slider == &ampLeadTrebleKnob) {
+        if (processor.amp_lead == 1)
             processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
         // Set knob states for saving positions when closing/reopening GUI
-        processor.ampLeadBassKnobState = ampLeadBassKnob.getValue();
-        processor.ampLeadMidKnobState = ampLeadMidKnob.getValue();
-        processor.ampLeadTrebleKnobState = ampLeadTrebleKnob.getValue();
+        
     }
     else if (slider == &ampPresenceKnob) {
-        if (processor.amp_lead == 1)
+        if (processor.amp_lead == 0)
             processor.set_ampEQ(ampCleanBassKnob.getValue(), ampCleanMidKnob.getValue(), ampCleanTrebleKnob.getValue(), ampPresenceKnob.getValue());
-        else if (processor.amp_lead == 0)
+        else if (processor.amp_lead == 1)
             processor.set_ampEQ(ampLeadBassKnob.getValue(), ampLeadMidKnob.getValue(), ampLeadTrebleKnob.getValue(), ampPresenceKnob.getValue());
     }
 
@@ -303,6 +293,13 @@ void WaveNetVaAudioProcessorEditor::sliderValueChanged(Slider* slider)
 
 void WaveNetVaAudioProcessorEditor::resetImages()
 {
+    if (processor.amp_state == 1 && processor.amp_lead == 1 ) {
+        background_set = background_lead;
+    } else if (processor.amp_state == 1 && processor.amp_lead == 0) {
+        background_set = background_clean;
+    } else {
+        background_set = background_off;
+    }
     // Set On/Off amp graphic
     if (processor.amp_state == 0) {
         ampOnButton.setImages(true, true, true,
@@ -329,7 +326,7 @@ void WaveNetVaAudioProcessorEditor::resetImages()
             0.0);
     }
     // Set clean/lead switch graphic
-    if (processor.amp_lead == 0) {
+    if (processor.amp_lead == 1) {
         ampCleanLeadButton.setImages(true, true, true,
             ImageCache::getFromMemory(BinaryData::power_switch_down_png, BinaryData::power_switch_down_pngSize), 1.0, Colours::transparentWhite,
             Image(), 1.0, Colours::transparentWhite,
@@ -343,4 +340,5 @@ void WaveNetVaAudioProcessorEditor::resetImages()
             ImageCache::getFromMemory(BinaryData::power_switch_up_png, BinaryData::power_switch_up_pngSize), 1.0, Colours::transparentWhite,
             0.0);
     }
+    repaint();
 }

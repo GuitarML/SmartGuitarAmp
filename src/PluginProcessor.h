@@ -106,18 +106,6 @@ public:
 
     AudioProcessorValueTreeState treeState;
 
-    // Amp knob states
-    //float ampPresenceKnobState = 0.0;
-    //float ampCleanBassKnobState = 0.0;
-    //float ampCleanMidKnobState = 0.0;
-    //float ampCleanTrebleKnobState = 0.0;
-    //float ampCleanGainKnobState = 10.0;
-    //float ampLeadBassKnobState = 0.0;
-    //float ampLeadMidKnobState = 0.0;
-    //float ampLeadTrebleKnobState = 0.0;
-    //float ampLeadGainKnobState = 10.0;
-    //float ampMasterKnobState = -12.0;
-
 private:
     WaveNet waveNet; // Amp Clean Channel / Lead Channel
     Eq4Band eq4band; // Amp EQ

@@ -30,7 +30,7 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
-
+    void resetImages();
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -60,6 +60,7 @@ private:
     Image background_clean = ImageCache::getFromMemory(BinaryData::amp_clean_jpg, BinaryData::amp_clean_jpgSize);
     Image background_lead = ImageCache::getFromMemory(BinaryData::amp_lead_jpg, BinaryData::amp_lead_jpgSize);
     Image background_off = ImageCache::getFromMemory(BinaryData::amp_off_jpg, BinaryData::amp_off_jpgSize);
+    Image background_set = ImageCache::getFromMemory(BinaryData::amp_clean_jpg, BinaryData::amp_clean_jpgSize);
     int current_background = 1;
 
     TextButton loadButton;
@@ -70,7 +71,6 @@ private:
     virtual void sliderValueChanged(Slider* slider) override;
     void ampOnButtonClicked();
     void ampCleanLeadButtonClicked();
-    void resetImages();
 
 public:
     std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> cleanGainSliderAttach;

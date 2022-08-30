@@ -9,6 +9,8 @@ target_sources(SmartAmp PRIVATE
 	ConvolutionLayer.h
 	ConvolutionStack.cpp
 	ConvolutionStack.h
+      Eq4Band.cpp
+      Eq4Band.h
 	myLookAndFeel.cpp
 	myLookAndFeel.h
 	PluginEditor.cpp
