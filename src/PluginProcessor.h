@@ -84,18 +84,8 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     void loadConfigAmp();
-    //void loadConfig(File configFile);
-
-    // Overdrive Pedal
-    //float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
-
-    // Amp
-    //void set_ampCleanDrive(float db_ampCleanDrive);
-    //void set_ampLeadDrive(float db_ampLeadDrive);
-    //void set_ampMaster(float db_ampMaster);
     void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
 
-    //float decibelToLinear(float dbValue);
 
     // Pedal/amp states
     int amp_state = 1; // 0 = off, 1 = on
@@ -124,12 +114,6 @@ private:
 
     float previousGainValue = 0.5;
     float previousMasterValue = 0.5;
-
-
-    // Amp
-    //float ampCleanDrive = 1.0;
-    //float ampLeadDrive = 1.0;
-    //float ampMaster = 1.0;
 
     var dummyVar;
 

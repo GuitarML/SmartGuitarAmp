@@ -180,16 +180,10 @@ void WaveNetVaAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
     // Setup Audio Data
     const int numSamples = buffer.getNumSamples();
     const int numInputChannels = getTotalNumInputChannels();
+    const int sampleRate = getSampleRate();
 
     auto cleanGainValue = static_cast<float> (cleanGainParam->load());
-    auto cleanBassValue = static_cast<float> (cleanBassParam->load());
-    auto cleanMidValue = static_cast<float> (cleanMidParam->load());
-    auto cleanTrebleValue = static_cast<float> (cleanTrebleParam->load());
-
     auto leadGainValue = static_cast<float> (leadGainParam->load());
-    auto leadBassValue = static_cast<float> (leadBassParam->load());
-    auto leadMidValue = static_cast<float> (leadMidParam->load());
-    auto leadTrebleValue = static_cast<float> (leadTrebleParam->load());
 
     auto presenceValue = static_cast<float> (presenceParam->load());
     auto masterValue = static_cast<float> (masterParam->load());
@@ -207,7 +201,7 @@ void WaveNetVaAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
         //    Wavenet, load json for waveNet2 based on lead/clean switch
         waveNet.process(buffer.getArrayOfReadPointers(), buffer.getArrayOfWritePointers(), buffer.getNumSamples());
 
-        eq4band.process(buffer, midiMessages, numSamples, numInputChannels);
+        eq4band.process(buffer.getReadPointer(0), buffer.getWritePointer(0), midiMessages, numSamples, numInputChannels, sampleRate);
 
         //    Master Volume 
         buffer.applyGain(masterValue);
