@@ -26,7 +26,7 @@ trained models, use the SmartGuitarPedal, which plays all models trained with Pe
 
 ## Installing the plugin
 
-1. Download the appropriate plugin installer (Windows, Mac, Linux)
+1. Download the appropriate plugin installer (Windows, Mac, Linux) from the [Releases](https://github.com/GuitarML/SmartGuitarAmp/releases) page.
 2. Run the installer and follow the instructions. May need to reboot to allow your DAW to recognize the new plugin.
 
 ## Build Instructions
