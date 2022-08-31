@@ -56,18 +56,18 @@ jobs:
       uses: actions/upload-artifact@v2
       with: 
         name: linux-assets
-        path: /home/runner/work/TS-M1N3/TS-M1N3/build/TS-M1N3_artefacts
+        path: /home/runner/work/SmartAmp/SmartAmp/build/SmartAmp_artefacts
         
     - name: Upload Mac Artifact GitHub Action
       if: runner.os == 'macOS'
       uses: actions/upload-artifact@v2
       with:
         name: mac-assets
-        path: /Users/runner/work/TS-M1N3/TS-M1N3/build/TS-M1N3_artefacts
+        path: /Users/runner/work/SmartAmp/SmartAmp/build/SmartAmp_artefacts
         
     - name: Upload Windows Artifact GitHub Action
       if: runner.os == 'Windows'
       uses: actions/upload-artifact@v2
       with:
         name: win-assets
-        path: D:/a/TS-M1N3/TS-M1N3/build/TS-M1N3_artefacts
+        path: D:/a/SmartAmp/SmartAmp/build/SmartAmp_artefacts
