@@ -11,7 +11,7 @@ models a small tube amp, with the ability to add more options in the future. The
 which is equivalent to the amp's clean and full drive settings. Gain and EQ knobs were added to 
 modulate the modeled sound.
 
-![app](https://github.com/keyth72/SmartGuitarAmp/blob/master/resources/amp_pic.png)
+![app](https://github.com/keyth72/SmartGuitarAmp/blob/master/resources/amp_pic.jpg)
 
 You can create your own models and load them in SmartGuitarAmp with minor code modifications.
 To train your own models, use [PedalNetRT](https://github.com/GuitarML/PedalNetRT)
