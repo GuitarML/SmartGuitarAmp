@@ -21,6 +21,8 @@ To share your best models, email the json files to smartguitarml@gmail.com and t
 in the latest release as a downloadable zip.
 
 Also see companion plugin, the [SmartGuitarPedal](https://github.com/GuitarML/SmartGuitarPedal)
+Note: As of SmartAmp version 1.3, the custom model load was removed to simplify the plugin. To load user
+trained models, use the SmartGuitarPedal, which plays all models trained with PedalNetRT.
 
 ## Installing the plugin
 
