@@ -15,6 +15,31 @@
 #include "WaveNetLoader.h"
 #include "Eq4Band.h"
 
+#define CLEAN_GAIN_ID "cleangain"
+#define CLEAN_GAIN_NAME "CleanGain"
+#define CLEAN_BASS_ID "cleanbass"
+#define CLEAN_BASS_NAME "CleanBass"
+#define CLEAN_MID_ID "cleanmid"
+#define CLEAN_MID_NAME "CleanMid"
+#define CLEAN_TREBLE_ID "cleantreble"
+#define CLEAN_TREBLE_NAME "CleanTreble"
+
+#define LEAD_GAIN_ID "leadgain"
+#define LEAD_GAIN_NAME "LeadGain"
+#define LEAD_BASS_ID "leadbass"
+#define LEAD_BASS_NAME "LeadBass"
+#define LEAD_MID_ID "leadmid"
+#define LEAD_MID_NAME "LeadMid"
+#define LEAD_TREBLE_ID "leadtreble"
+#define LEAD_TREBLE_NAME "LeadTreble"
+
+#define PRESENCE_ID "presence"
+#define PRESENCE_NAME "Presence"
+#define MASTER_ID "master"
+#define MASTER_NAME "Master"
+
+
+
 //==============================================================================
 /**
 */
@@ -59,18 +84,8 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     void loadConfigAmp();
-    void loadConfig(File configFile);
-
-    // Overdrive Pedal
-    float convertLogScale(float in_value, float x_min, float x_max, float y_min, float y_max);
-
-    // Amp
-    void set_ampCleanDrive(float db_ampCleanDrive);
-    void set_ampLeadDrive(float db_ampLeadDrive);
-    void set_ampMaster(float db_ampMaster);
     void set_ampEQ(float bass_slider, float mid_slider, float treble_slider, float presence_slider);
 
-    float decibelToLinear(float dbValue);
 
     // Pedal/amp states
     int amp_state = 1; // 0 = off, 1 = on
@@ -79,27 +94,26 @@ public:
     File loaded_tone;
     juce::String loaded_tone_name;
 
-    // Amp knob states
-    float ampPresenceKnobState = 0.0;
-    float ampCleanBassKnobState = 0.0;
-    float ampCleanMidKnobState = 0.0;
-    float ampCleanTrebleKnobState = 0.0;
-    float ampCleanGainKnobState = 10.0;
-    float ampLeadBassKnobState = 0.0;
-    float ampLeadMidKnobState = 0.0;
-    float ampLeadTrebleKnobState = 0.0;
-    float ampLeadGainKnobState = 10.0;
-    float ampMasterKnobState = -12.0;
+    AudioProcessorValueTreeState treeState;
 
 private:
     WaveNet waveNet; // Amp Clean Channel / Lead Channel
     Eq4Band eq4band; // Amp EQ
 
+    std::atomic<float>* presenceParam = nullptr;
+    std::atomic<float>* cleanBassParam = nullptr;
+    std::atomic<float>* cleanMidParam = nullptr;
+    std::atomic<float>* cleanTrebleParam = nullptr;
+    std::atomic<float>* cleanGainParam = nullptr;
+    std::atomic<float>* leadGainParam = nullptr;
+    std::atomic<float>* leadBassParam = nullptr;
+    std::atomic<float>* leadMidParam = nullptr;
+    std::atomic<float>* leadTrebleParam = nullptr;
+    std::atomic<float>* masterParam = nullptr;
 
-    // Amp
-    float ampCleanDrive = 1.0;
-    float ampLeadDrive = 1.0;
-    float ampMaster = 1.0;
+
+    float previousGainValue = 0.5;
+    float previousMasterValue = 0.5;
 
     var dummyVar;
 

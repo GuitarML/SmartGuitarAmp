@@ -20,30 +20,32 @@ Model training is done using PyTorch on pre recorded .wav samples. More info in 
 To share your best models, email the json files to smartguitarml@gmail.com and they may be included 
 in the latest release as a downloadable zip.
 
-Also see companion plugin, the [SmartGuitarPedal](https://github.com/GuitarML/SmartGuitarPedal)
+Also see companion plugin, the [SmartGuitarPedal](https://github.com/GuitarML/SmartGuitarPedal)<br>
+Note: As of SmartAmp version 1.3, the custom model load was removed to simplify the plugin. To load user
+trained models, use the SmartGuitarPedal, which plays all models trained with PedalNetRT.
 
 ## Installing the plugin
 
-1. Download plugin (Windows 10, Mac, Ubuntu Linux) [here](https://github.com/keyth72/SmartGuitarAmp/releases)
-2. Copy to your DAW's VST directory (for Mac, use .dmg installer or copy AU/VST3 to desired folder)
+1. Download the appropriate plugin installer (Windows, Mac, Linux)
+2. Run the installer and follow the instructions. May need to reboot to allow your DAW to recognize the new plugin.
 
 ## Build Instructions
 
-1. Clone or download this repository.
-2. Download and install [JUCE](https://juce.com/) This project uses the "Projucer" application from the JUCE website. 
-3. Download [Eigen](http://eigen.tuxfamily.org)
-   Extract Eigen to a convenient location on your system (will be linked with Projucer)
-4. Open SmartGuitarPedal.jucer file with Projucer
-5. Add the <full_path_to>/ Eigen folder to "Header Search Paths" in Exporters -> Debug/Release
-6. Open and build project in Visual Studio (Windows), Xcode (Mac), or Code::Blocks/Makefile (Linux)
+### Build with Cmake
 
-Note: Make sure to build in Release mode unless actually debugging. Debug mode will not keep up with real time playing.
+```bash
+# Clone the repository
+$ git clone https://github.com/GuitarML/SmartGuitarAmp.git
+$ cd SmartGuitarAmp
 
-## Using your own custom trained models (or models from the TonePack)
+# initialize and set up submodules
+$ git submodule update --init --recursive
 
-Use the "Load Tone" button in the plugin to load tone models trained with PedalNetRT.  The current channel's 
-EQ/gain will be applied to the custom tone.  Switching the clean/lead channel unloads the custom tone and 
-reloads the channel's default tone.
+# build with CMake
+$ cmake -Bbuild
+$ cmake --build build --config Release
+```
+The binaries will be located in `SmartAmp/build/SmartAmp_artefacts/`
 
 ## License
 This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
