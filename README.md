@@ -4,11 +4,10 @@
 
 Guitar plugin made with JUCE that uses neural network models to emulate real world hardware.
 
-See video demo on [YouTube](https://youtu.be/oIX5y-nyhcY)
+See video demo on [YouTube](https://youtu.be/I9DElOaZvHos)
 
 This plugin uses a WaveNet model to recreate the sound of real world hardware. The current version
-models a small tube amp, with the ability to add more options in the future. There is a clean/lead channel, 
-which is equivalent to the amp's clean and full drive settings. Gain and EQ knobs were added to 
+models a small tube amp at clean and overdriven settings. Gain and EQ knobs were added to 
 modulate the modeled sound.
 
 ![app](https://github.com/GuitarML/SmartGuitarAmp/blob/main/resources/amp_pic.jpg)
