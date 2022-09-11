@@ -26,7 +26,7 @@ endif()
 juce_add_plugin(SmartAmp
     COMPANY_NAME GuitarML
     PLUGIN_MANUFACTURER_CODE GtML
-    PLUGIN_CODE Npi3 
+    PLUGIN_CODE Sga3 
     FORMATS ${JUCE_FORMATS}
     ProductName "SmartAmp"
     LV2_URI https://github.com/GuitarML/SmartAmp
