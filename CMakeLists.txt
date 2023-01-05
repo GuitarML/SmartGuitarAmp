@@ -29,7 +29,7 @@ juce_add_plugin(SmartAmp
     PLUGIN_CODE Sga3 
     FORMATS ${JUCE_FORMATS}
     ProductName "SmartAmp"
-    LV2_URI https://github.com/GuitarML/SmartAmp
+    LV2URI https://github.com/GuitarML/SmartAmp
     ICON_BIG resources/logo.png
     MICROPHONE_PERMISSION_ENABLED TRUE
 )
