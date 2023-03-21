@@ -225,7 +225,7 @@ bool WaveNetVaAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* WaveNetVaAudioProcessor::createEditor()
 {
-    return new WaveNetVaAudioProcessorEditor (*this);
+    return new WrappedWaveNetVaAudioProcessorEditor (*this);
 }
 
 //==============================================================================
@@ -255,7 +255,7 @@ void WaveNetVaAudioProcessor::setStateInformation (const void* data, int sizeInB
             treeState.replaceState (juce::ValueTree::fromXml (*xmlState));
             amp_state = xmlState->getBoolAttribute ("amp_state");
             amp_lead = xmlState->getBoolAttribute ("amp_lead");
-            if (auto* editor = dynamic_cast<WaveNetVaAudioProcessorEditor*> (getActiveEditor()))
+            if (auto* editor = dynamic_cast<WrappedWaveNetVaAudioProcessorEditor*> (getActiveEditor()))
                 editor->resetImages();
         }
     }
