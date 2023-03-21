@@ -238,6 +238,7 @@ void WaveNetVaAudioProcessor::getStateInformation (MemoryBlock& destData)
     std::unique_ptr<XmlElement> xml (state.createXml());
     xml->setAttribute ("amp_state", amp_state);
     xml->setAttribute ("amp_lead", amp_lead);
+    xml->setAttribute ("gui_scale_factor", gui_scale_factor);
     copyXmlToBinary (*xml, destData);
 }
 
@@ -255,6 +256,7 @@ void WaveNetVaAudioProcessor::setStateInformation (const void* data, int sizeInB
             treeState.replaceState (juce::ValueTree::fromXml (*xmlState));
             amp_state = xmlState->getBoolAttribute ("amp_state");
             amp_lead = xmlState->getBoolAttribute ("amp_lead");
+            gui_scale_factor = xmlState->getDoubleAttribute ("gui_scale_factor", 1.0);
             if (auto* editor = dynamic_cast<WrappedWaveNetVaAudioProcessorEditor*> (getActiveEditor()))
                 editor->resetImages();
         }

@@ -287,6 +287,16 @@ void WaveNetVaComponent::resetImages()
     repaint();
 }
 
+float WaveNetVaComponent::getGuiScaleFactor()
+{
+    return static_cast<float> (processor.gui_scale_factor);
+}
+
+void WaveNetVaComponent::persistGuiScaleFactor(float scaleFactor)
+{
+    processor.gui_scale_factor = static_cast<double> (scaleFactor);
+}
+
 // Wrapper implementation
 WrappedWaveNetVaAudioProcessorEditor::WrappedWaveNetVaAudioProcessorEditor(WaveNetVaAudioProcessor& p)
     : AudioProcessorEditor(p), waveNetVaComponent(p)
@@ -299,8 +309,10 @@ WrappedWaveNetVaAudioProcessorEditor::WrappedWaveNetVaAudioProcessorEditor(WaveN
         constrainer->setSizeLimits(originalWidth / 4, originalHeight / 4, originalWidth * 2, originalHeight * 2);
     }
 
-    setResizable(true, true);
-    setSize(originalWidth, originalHeight);
+    setResizable(true, true);    
+    float scaledWidth = static_cast<float> (originalWidth) * waveNetVaComponent.getGuiScaleFactor();
+    float scaledHeight = static_cast<float> (originalHeight) * waveNetVaComponent.getGuiScaleFactor();
+    setSize(scaledWidth, scaledHeight);
 }
 
 void WrappedWaveNetVaAudioProcessorEditor::resized()
@@ -308,6 +320,7 @@ void WrappedWaveNetVaAudioProcessorEditor::resized()
     const auto scaleFactor = static_cast<float> (getWidth()) / originalWidth;
     waveNetVaComponent.setTransform(AffineTransform::scale(scaleFactor));
     waveNetVaComponent.setBounds(0, 0, originalWidth, originalHeight);
+    waveNetVaComponent.persistGuiScaleFactor(scaleFactor);
 }
 
 void WrappedWaveNetVaAudioProcessorEditor::resetImages()

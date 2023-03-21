@@ -31,6 +31,8 @@ public:
     void resized() override;
 
     void resetImages();
+    float getGuiScaleFactor();
+    void persistGuiScaleFactor(float scaleFactor);
 
 private:
     // This reference is provided as a quick way for your editor to
