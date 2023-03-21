@@ -313,6 +313,7 @@ WrappedWaveNetVaAudioProcessorEditor::WrappedWaveNetVaAudioProcessorEditor(WaveN
     float scaledWidth = static_cast<float> (originalWidth) * waveNetVaComponent.getGuiScaleFactor();
     float scaledHeight = static_cast<float> (originalHeight) * waveNetVaComponent.getGuiScaleFactor();
     setSize(scaledWidth, scaledHeight);
+    resetImages();
 }
 
 void WrappedWaveNetVaAudioProcessorEditor::resized()
