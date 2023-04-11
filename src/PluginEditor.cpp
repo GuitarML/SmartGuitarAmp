@@ -12,8 +12,8 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p)
+WaveNetVaComponent::WaveNetVaComponent (WaveNetVaAudioProcessor& p)
+    : processor (p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to
@@ -124,14 +124,11 @@ WaveNetVaAudioProcessorEditor::WaveNetVaAudioProcessorEditor (WaveNetVaAudioProc
     ampMasterKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 50, 20 );
     ampMasterKnob.setDoubleClickReturnValue(true, 0.5);
 
-    // Size of plugin GUI
-    setSize (1085, 540);
-
     processor.loadConfigAmp();
     resetImages();
 }
 
-WaveNetVaAudioProcessorEditor::~WaveNetVaAudioProcessorEditor()
+WaveNetVaComponent::~WaveNetVaComponent()
 {
     ampPresenceKnob.setLookAndFeel(nullptr);
     ampCleanBassKnob.setLookAndFeel(nullptr);
@@ -146,7 +143,7 @@ WaveNetVaAudioProcessorEditor::~WaveNetVaAudioProcessorEditor()
 }
 
 //==============================================================================
-void WaveNetVaAudioProcessorEditor::paint (Graphics& g)
+void WaveNetVaComponent::paint (Graphics& g)
 {
 
     // Workaround for graphics on Windows builds (clipping code doesn't work correctly on Windows)
@@ -160,7 +157,7 @@ void WaveNetVaAudioProcessorEditor::paint (Graphics& g)
 
 }
 
-void WaveNetVaAudioProcessorEditor::resized()
+void WaveNetVaComponent::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
@@ -183,7 +180,7 @@ void WaveNetVaAudioProcessorEditor::resized()
     ampLED.setBounds(975, 40, 15, 25);
 }
 
-void WaveNetVaAudioProcessorEditor::buttonClicked(juce::Button* button)
+void WaveNetVaComponent::buttonClicked(juce::Button* button)
 {
     if (button == &ampOnButton) {
         ampOnButtonClicked();
@@ -192,7 +189,7 @@ void WaveNetVaAudioProcessorEditor::buttonClicked(juce::Button* button)
     }
 }
 
-void WaveNetVaAudioProcessorEditor::ampOnButtonClicked() {
+void WaveNetVaComponent::ampOnButtonClicked() {
     if (processor.amp_state == 0) {
         processor.amp_state = 1;
     }
@@ -202,7 +199,7 @@ void WaveNetVaAudioProcessorEditor::ampOnButtonClicked() {
     resetImages();
 }
 
-void WaveNetVaAudioProcessorEditor::ampCleanLeadButtonClicked() {
+void WaveNetVaComponent::ampCleanLeadButtonClicked() {
     if (processor.amp_lead == 1) {
         processor.amp_lead = 0;
         processor.loadConfigAmp();
@@ -217,7 +214,7 @@ void WaveNetVaAudioProcessorEditor::ampCleanLeadButtonClicked() {
     resetImages();
 }
 
-void WaveNetVaAudioProcessorEditor::sliderValueChanged(Slider* slider)
+void WaveNetVaComponent::sliderValueChanged(Slider* slider)
 {
     // Amp
 
@@ -238,7 +235,7 @@ void WaveNetVaAudioProcessorEditor::sliderValueChanged(Slider* slider)
 
 }
 
-void WaveNetVaAudioProcessorEditor::resetImages()
+void WaveNetVaComponent::resetImages()
 {
     if (processor.amp_state == 1 && processor.amp_lead == 1 ) {
         background_set = background_lead;
@@ -288,4 +285,46 @@ void WaveNetVaAudioProcessorEditor::resetImages()
             0.0);
     }
     repaint();
+}
+
+float WaveNetVaComponent::getGuiScaleFactor()
+{
+    return static_cast<float> (processor.gui_scale_factor);
+}
+
+void WaveNetVaComponent::persistGuiScaleFactor(float scaleFactor)
+{
+    processor.gui_scale_factor = static_cast<double> (scaleFactor);
+}
+
+// Wrapper implementation
+WrappedWaveNetVaAudioProcessorEditor::WrappedWaveNetVaAudioProcessorEditor(WaveNetVaAudioProcessor& p)
+    : AudioProcessorEditor(p), waveNetVaComponent(p)
+{
+    addAndMakeVisible(waveNetVaComponent);
+
+    if (auto* constrainer = getConstrainer())
+    {
+        constrainer->setFixedAspectRatio(static_cast<double> (originalWidth) / static_cast<double> (originalHeight));
+        constrainer->setSizeLimits(originalWidth / 4, originalHeight / 4, originalWidth * 2, originalHeight * 2);
+    }
+
+    setResizable(true, true);    
+    float scaledWidth = static_cast<float> (originalWidth) * waveNetVaComponent.getGuiScaleFactor();
+    float scaledHeight = static_cast<float> (originalHeight) * waveNetVaComponent.getGuiScaleFactor();
+    setSize(scaledWidth, scaledHeight);
+    resetImages();
+}
+
+void WrappedWaveNetVaAudioProcessorEditor::resized()
+{
+    const auto scaleFactor = static_cast<float> (getWidth()) / originalWidth;
+    waveNetVaComponent.setTransform(AffineTransform::scale(scaleFactor));
+    waveNetVaComponent.setBounds(0, 0, originalWidth, originalHeight);
+    waveNetVaComponent.persistGuiScaleFactor(scaleFactor);
+}
+
+void WrappedWaveNetVaAudioProcessorEditor::resetImages()
+{
+    waveNetVaComponent.resetImages();
 }

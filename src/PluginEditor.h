@@ -17,20 +17,22 @@
 //==============================================================================
 /**
 */
-class WaveNetVaAudioProcessorEditor  : public AudioProcessorEditor,
+class WaveNetVaComponent  : public Component,
                                        private Button::Listener,
                                        private Slider::Listener
                                 
 {
 public:
-    WaveNetVaAudioProcessorEditor (WaveNetVaAudioProcessor&);
-    ~WaveNetVaAudioProcessorEditor();
+    WaveNetVaComponent (WaveNetVaAudioProcessor&);
+    ~WaveNetVaComponent();
 
     //==============================================================================
     void paint (Graphics&) override;
     void resized() override;
 
     void resetImages();
+    float getGuiScaleFactor();
+    void persistGuiScaleFactor(float scaleFactor);
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -84,5 +86,18 @@ public:
     std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> presenceSliderAttach;
     std::unique_ptr <AudioProcessorValueTreeState::SliderAttachment> masterSliderAttach;
  
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveNetVaAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveNetVaComponent)
+};
+
+class WrappedWaveNetVaAudioProcessorEditor : public AudioProcessorEditor
+{
+public:
+    WrappedWaveNetVaAudioProcessorEditor(WaveNetVaAudioProcessor&);
+    void resized() override;
+    void resetImages();
+private:
+    static constexpr int originalWidth { 1085 };
+    static constexpr int originalHeight { 540 };
+
+    WaveNetVaComponent waveNetVaComponent;
 };
